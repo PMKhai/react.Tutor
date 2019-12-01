@@ -1,15 +1,12 @@
 import React from 'react';
-import { Router, Route, Switch, Redirect } from 'react-router-dom';
-import Home from './views/home';
+import { Router } from 'react-router-dom';
 import { history } from './index';
+import Routes from './routes';
 
 function App() {
   return (
     <Router history={history}>
-      <Switch>
-        <Route path="/home" exact component={Home} />
-        <Redirect from="/" to="home" />
-      </Switch>
+      <Routes />
     </Router>
   );
 }
