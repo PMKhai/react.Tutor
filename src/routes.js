@@ -4,6 +4,7 @@ import RouteWithLayout from './components/RouteWithLayout';
 import NormalLayout from './layouts/normal';
 import Home from './views/home';
 import SignIn from './views/signin';
+import SignUp from './views/singup';
 
 const Routes = () => (
   <Switch>
@@ -18,6 +19,12 @@ const Routes = () => (
       exact
       layout={NormalLayout}
       path="/signin"
+    />
+    <RouteWithLayout
+      component={SignUp}
+      exact
+      layout={NormalLayout}
+      path="/signup"
     />
     <Redirect exact from="/" to="home" />
   </Switch>
