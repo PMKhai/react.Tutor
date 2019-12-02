@@ -1,4 +1,5 @@
 import React from 'react';
+import './style.css';
 import {
   Avatar,
   Button,
@@ -10,8 +11,11 @@ import {
   Typography,
   Container,
 } from '@material-ui/core';
+import FacebookLogin from 'react-facebook-login';
+import GoogleLogin from 'react-google-login';
 import { makeStyles } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import SOCIAL_APP_ID from '../../constants/socialLogin';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -44,6 +48,36 @@ const useStyles = makeStyles((theme) => ({
 export default function SignIn() {
   const classes = useStyles();
 
+  const responseFacebook = (response) => {
+    try {
+      console.log('fb--', response);
+      const { email, name, picture } = response;
+
+      const user = {};
+      user.password = SOCIAL_APP_ID.SOCIAL_PASSWORD;
+      user.email = email;
+      user.name = name;
+      user.urlAvatar = picture.data.url;
+      //this.props.register(user, true);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const responseGoogle = (response) => {
+    try {
+      console.log('gg--', response);
+      const { email, name, imageUrl } = response.profileObj;
+      const user = {};
+      user.password = SOCIAL_APP_ID.SOCIAL_PASSWORD;
+      user.email = email;
+      user.name = name;
+      user.urlAvatar = imageUrl;
+      // this.props.register(user, true);
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <Container maxWidth="sm" className={classes.widthForm}>
       <div className={classes.paper}>
@@ -93,7 +127,7 @@ export default function SignIn() {
             <Typography>or</Typography>
           </div>
           <Grid container>
-            <Button
+            {/* <Button
               type="button"
               fullWidth
               variant="contained"
@@ -103,16 +137,38 @@ export default function SignIn() {
             >
               Facebook
             </Button>
-            <Button
-              type="button"
-              fullWidth
-              variant="contained"
-              color="secondary"
-              className={classes.buttonAuth}
-              style={{ marginBottom: '5px' }}
-            >
-              Google
-            </Button>
+            */
+            // <Button
+            //   type="button"
+            //   fullWidth
+            //   variant="contained"
+            //   color="secondary"
+            //   className={classes.buttonAuth}
+            //   style={{ marginBottom: '5px' }}
+              
+            // >
+             
+            // </Button> 
+          }
+            
+              <div>
+                <GoogleLogin
+                  className="ggBtnLogin"
+                  clientId={SOCIAL_APP_ID.GOOGLE_CLIENTID}
+                  onSuccess={responseGoogle}
+                  onFailure={responseGoogle}
+                />
+              </div>
+              <div>
+                <FacebookLogin
+                  cssClass="fBtnLogin"
+                  appId={SOCIAL_APP_ID.FACEBOOK_APPID}
+                  fields="name,email,picture"
+                  icon="fa-facebook"
+                  callback={responseFacebook}
+                />
+              </div>
+            
           </Grid>
           <Grid container>
             <Grid item xs>

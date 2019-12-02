@@ -6,8 +6,11 @@ import {
   Toolbar,
   InputBase,
 } from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import { Menu, Dropdown, Icon, Avatar } from 'antd';
 import { Search } from '@material-ui/icons';
 import { makeStyles, fade } from '@material-ui/core/styles';
+import 'antd/dist/antd.css';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -62,9 +65,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const menu = (profileUser) => (
+  <Menu>
+    <Menu.Item>
+      <h3>Hi, Huy</h3>
+    </Menu.Item>
+    <Menu.Divider />
+    <Menu.Item>
+      <Link to="/profile">Profile</Link>
+    </Menu.Item>
+    <Menu.Item>
+      <Link to="/login">Logout</Link>
+    </Menu.Item>
+  </Menu>
+);
 const NormalNavbar = () => {
   const classes = useStyles();
-
+  const profileUser = null;
+  const isLogged = true;
   return (
     <Toolbar className={classes.toolbar}>
       <Typography
@@ -90,12 +108,30 @@ const NormalNavbar = () => {
       <IconButton>
         <Search />
       </IconButton>
-      <Button variant="outlined" size="small" className={classes.customButton}>
-        Sign up
-      </Button>
-      <Button variant="outlined" color="secondary" size="small">
-        Sign in
-      </Button>
+      {isLogged && (
+        <Dropdown overlay={menu(profileUser)}>
+          <a className="ant-dropdown-link" href="##">
+            <Avatar
+              src="https://firebasestorage.googleapis.com/v0/b/caro-react-redux.appspot.com/o/images%2F70898022_2767181436700422_2814379463616233472_n.jpg?alt=media&token=b0552190-559d-45d9-bc2d-e013ecaa76fe"
+              alt="avatar"
+            />
+          </a>
+        </Dropdown>
+      )}
+      {!isLogged && (
+        <Button
+          variant="outlined"
+          size="small"
+          className={classes.customButton}
+        >
+          Sign up
+        </Button>
+      )}
+      {!isLogged && (
+        <Button variant="outlined" color="secondary" size="small">
+          Sign in
+        </Button>
+      )}
     </Toolbar>
   );
 };

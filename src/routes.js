@@ -6,6 +6,7 @@ import Home from './views/home';
 import SignIn from './views/signin';
 import SignUp from './views/singup';
 
+
 const Routes = () => (
   <Switch>
     <RouteWithLayout
