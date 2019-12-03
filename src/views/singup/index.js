@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Redirect } from 'react-router-dom';
 import {
   Avatar,
   Typography,
@@ -9,10 +10,15 @@ import {
   Button,
   FormControlLabel,
   Container,
+  CircularProgress,
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import validate from 'validate.js';
+import axios from 'axios';
+import { API, REGISTER } from '../../config';
+
+const api = `${API}${REGISTER}`;
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -66,17 +72,34 @@ const schema = {
   },
 };
 
-const Signup = () => {
+const Signup = (props) => {
   const classes = useStyles();
   const [formState, setFormState] = useState({
     isValid: false,
     values: { isTutor: false },
     touched: {},
     errors: {},
+    isLoading: false,
   });
 
-  const handleSignup = (e) => {
-    e.preventDefault();
+  // eslint-disable-next-line consistent-return
+  const handleSignup = async (e) => {
+    try {
+      e.preventDefault();
+
+      setFormState((formState) => ({
+        ...formState,
+        isLoading: !formState.isLoading,
+        isValid: !formState.isValid,
+      }));
+
+      const res = await axios.post(api, formState.values);
+      if (res.data.returncode === 1) {
+        props.history.push('/signin');
+      }
+    } catch (err) {
+      alert(err.message);
+    }
   };
 
   const handleChange = (event) => {
@@ -225,6 +248,9 @@ const Signup = () => {
             }}
             disabled={!formState.isValid}
           >
+            {formState.isLoading && (
+              <CircularProgress size={20} style={{ marginRight: '5px' }} />
+            )}
             Sign Up
           </Button>
           <Grid container justify="flex-end">
