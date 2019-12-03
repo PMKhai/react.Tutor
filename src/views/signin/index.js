@@ -127,7 +127,8 @@ export default function SignIn() {
             <Typography>or</Typography>
           </div>
           <Grid container>
-            {/* <Button
+            {
+              /* <Button
               type="button"
               fullWidth
               variant="contained"
@@ -138,37 +139,34 @@ export default function SignIn() {
               Facebook
             </Button>
             */
-            // <Button
-            //   type="button"
-            //   fullWidth
-            //   variant="contained"
-            //   color="secondary"
-            //   className={classes.buttonAuth}
-            //   style={{ marginBottom: '5px' }}
-              
-            // >
-             
-            // </Button> 
-          }
-            
-              <div>
-                <GoogleLogin
-                  className="ggBtnLogin"
-                  clientId={SOCIAL_APP_ID.GOOGLE_CLIENTID}
-                  onSuccess={responseGoogle}
-                  onFailure={responseGoogle}
-                />
-              </div>
-              <div>
-                <FacebookLogin
-                  cssClass="fBtnLogin"
-                  appId={SOCIAL_APP_ID.FACEBOOK_APPID}
-                  fields="name,email,picture"
-                  icon="fa-facebook"
-                  callback={responseFacebook}
-                />
-              </div>
-            
+              // <Button
+              //   type="button"
+              //   fullWidth
+              //   variant="contained"
+              //   color="secondary"
+              //   className={classes.buttonAuth}
+              //   style={{ marginBottom: '5px' }}
+              // >
+              // </Button>
+            }
+
+            <div>
+              <GoogleLogin
+                className="ggBtnLogin"
+                clientId={SOCIAL_APP_ID.GOOGLE_CLIENTID}
+                onSuccess={responseGoogle}
+                onFailure={responseGoogle}
+              />
+            </div>
+            <div>
+              <FacebookLogin
+                cssClass="fBtnLogin"
+                appId={SOCIAL_APP_ID.FACEBOOK_APPID}
+                fields="name,email,picture"
+                icon="fa-facebook"
+                callback={responseFacebook}
+              />
+            </div>
           </Grid>
           <Grid container>
             <Grid item xs>

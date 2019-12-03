@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Avatar,
   Typography,
@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
+import validate from 'validate.js';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -36,8 +37,86 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const schema = {
+  firstName: {
+    presence: { allowEmpty: false, message: 'is required' },
+    length: {
+      maximum: 32,
+    },
+  },
+  lastName: {
+    presence: { allowEmpty: false, message: 'is required' },
+    length: {
+      maximum: 32,
+    },
+  },
+  email: {
+    presence: { allowEmpty: false, message: 'is required' },
+    email: true,
+    length: {
+      maximum: 64,
+    },
+  },
+  password: {
+    presence: { allowEmpty: false, message: 'is required' },
+    length: {
+      minimum: 6,
+      maximum: 128,
+    },
+  },
+};
+
 const Signup = () => {
   const classes = useStyles();
+  const [formState, setFormState] = useState({
+    isValid: false,
+    values: { isTutor: false },
+    touched: {},
+    errors: {},
+  });
+
+  const handleSignup = (e) => {
+    e.preventDefault();
+  };
+
+  const handleChange = (event) => {
+    event.persist();
+
+    setFormState((formState) => ({
+      ...formState,
+      values: {
+        ...formState.values,
+        [event.target.name]: event.target.value,
+      },
+      touched: {
+        ...formState.touched,
+        [event.target.name]: true,
+      },
+    }));
+  };
+
+  useEffect(() => {
+    const errors = validate(formState.values, schema);
+
+    setFormState((formState) => ({
+      ...formState,
+      isValid: !errors,
+      errors: errors || {},
+    }));
+  }, [formState.values]);
+
+  const hasError = (field) =>
+    !!(formState.touched[field] && formState.errors[field]);
+
+  const handleClick = () => {
+    setFormState((formState) => ({
+      ...formState,
+      values: {
+        ...formState.values,
+        isTutor: !formState.values.isTutor,
+      },
+    }));
+  };
 
   return (
     <Container maxWidth="sm" className={classes.widthForm}>
@@ -60,6 +139,12 @@ const Signup = () => {
                 id="firstName"
                 label="First Name"
                 autoFocus
+                error={hasError('firstName')}
+                helperText={
+                  hasError('firstName') ? formState.errors.firstName[0] : null
+                }
+                onChange={handleChange}
+                value={formState.values.firstName || ''}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -71,6 +156,12 @@ const Signup = () => {
                 label="Last Name"
                 name="lastName"
                 autoComplete="lname"
+                error={hasError('lastName')}
+                helperText={
+                  hasError('lastName') ? formState.errors.lastName[0] : null
+                }
+                onChange={handleChange}
+                value={formState.values.lastName || ''}
               />
             </Grid>
             <Grid item xs={12}>
@@ -82,6 +173,12 @@ const Signup = () => {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                error={hasError('email')}
+                helperText={
+                  hasError('email') ? formState.errors.email[0] : null
+                }
+                onChange={handleChange}
+                value={formState.values.email || ''}
               />
             </Grid>
             <Grid item xs={12}>
@@ -94,11 +191,24 @@ const Signup = () => {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                error={hasError('password')}
+                helperText={
+                  hasError('password') ? formState.errors.password[0] : null
+                }
+                onChange={handleChange}
+                value={formState.values.password || ''}
               />
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
+                control={
+                  <Checkbox
+                    value="allowExtraEmails"
+                    color="primary"
+                    name="tutor"
+                    onChange={handleClick}
+                  />
+                }
                 label="Are you tutor?"
                 labelPlacement="end"
               />
@@ -110,6 +220,10 @@ const Signup = () => {
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={(e) => {
+              handleSignup(e);
+            }}
+            disabled={!formState.isValid}
           >
             Sign Up
           </Button>

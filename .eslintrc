@@ -21,6 +21,9 @@
     "import/prefer-default-export": "off",
     "react/jsx-props-no-spreading": "off",
     "react/prop-types": "off",
-    "react/no-unescaped-entities": "off"
+    "react/no-unescaped-entities": "off",
+    "react/jsx-wrap-multilines": "off",
+    "implicit-arrow-linebreak": "off",
+    "no-shadow": "off"
   }
 }
