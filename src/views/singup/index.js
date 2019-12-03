@@ -96,6 +96,9 @@ const Signup = (props) => {
       if (res.data.returncode === 1) {
         props.history.push('/signin');
       }
+      else {
+        alert(res.data.message)
+      }
     } catch (err) {
       alert(err.message);
     }

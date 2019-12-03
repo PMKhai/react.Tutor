@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './style.css';
+import { Alert } from 'antd';
 import {
   Avatar,
   Button,
@@ -10,13 +11,18 @@ import {
   Grid,
   Typography,
   Container,
+  CircularProgress,
 } from '@material-ui/core';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
 import { makeStyles } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import axios from 'axios';
 import SOCIAL_APP_ID from '../../constants/socialLogin';
+import { API, LOGIN, REGISTER } from '../../config';
 
+const apiLogin = `${API}${LOGIN}`;
+const apiRegister = `${API}${REGISTER}`;
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -45,42 +51,147 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn() {
+export default function SignIn(props) {
   const classes = useStyles();
+  const [formState, setFormState] = useState({
+    isValid: false,
+    values: { isTutor: false },
+    touched: {},
+    errors: {},
+    isLoading: false,
+  });
+  const [result, setResult] = useState(false);
+  const handleChange = (event) => {
+    event.persist();
 
-  const responseFacebook = (response) => {
+    setFormState((formState) => ({
+      ...formState,
+      values: {
+        ...formState.values,
+        [event.target.name]: event.target.value,
+      },
+      touched: {
+        ...formState.touched,
+        [event.target.name]: true,
+      },
+    }));
+  };
+  const handleSignup = async (e) => {
     try {
+      e.preventDefault();
+
+      setFormState((formState) => ({
+        ...formState,
+        isLoading: !formState.isLoading,
+        isValid: !formState.isValid,
+      }));
+      console.log(formState.values);
+      const res = await axios.post(apiLogin, formState.values);
+      if (res.data.returncode === 1) {
+        props.history.push('/home');
+      } else {
+        console.log('resdata', res.data);
+      }
+    } catch (err) {
+      setResult(true);
+      setFormState((formState) => ({
+        ...formState,
+        isLoading: !formState.isLoading,
+        isValid: !formState.isValid,
+      }));
+    }
+  };
+  const responseFacebook = async (response) => {
+    const user = {};
+    try {
+      setFormState((formState) => ({
+        ...formState,
+        isLoading: !formState.isLoading,
+        isValid: !formState.isValid,
+      }));
       console.log('fb--', response);
+
       const { email, name, picture } = response;
 
-      const user = {};
       user.password = SOCIAL_APP_ID.SOCIAL_PASSWORD;
       user.email = email;
       user.name = name;
       user.urlAvatar = picture.data.url;
-      //this.props.register(user, true);
+      let res = await axios.post(apiRegister, user);
+      if (res.data.returncode === 1) {
+        res = await axios.post(apiLogin, user);
+        if (res.data.returncode === 1) {
+          props.history.push('/home');
+        }
+      }
     } catch (e) {
-      console.log(e);
+      try {
+        const res = await axios.post(apiLogin, user);
+        if (res.data.returncode === 1) {
+          props.history.push('/home');
+        }
+      } catch (e) {
+        console.log(e);
+        setResult(true);
+        setFormState((formState) => ({
+          ...formState,
+          isLoading: !formState.isLoading,
+          isValid: !formState.isValid,
+        }));
+      }
     }
   };
 
-  const responseGoogle = (response) => {
+  const responseGoogle = async (response) => {
+    const user = {};
     try {
+      setFormState((formState) => ({
+        ...formState,
+        isLoading: !formState.isLoading,
+        isValid: !formState.isValid,
+      }));
       console.log('gg--', response);
       const { email, name, imageUrl } = response.profileObj;
-      const user = {};
       user.password = SOCIAL_APP_ID.SOCIAL_PASSWORD;
       user.email = email;
       user.name = name;
       user.urlAvatar = imageUrl;
-      // this.props.register(user, true);
+      let res = await axios.post(apiRegister, user);
+      if (res.data.returncode === 1) {
+        res = await axios.post(apiLogin, user);
+        if (res.data.returncode === 1) {
+          props.history.push('/home');
+        }
+      }
     } catch (e) {
-      console.log(e);
+      try {
+        const res = await axios.post(apiLogin, user);
+        if (res.data.returncode === 1) {
+          props.history.push('/home');
+        }
+      } catch (e) {
+        console.log(e);
+        setResult(true);
+        setFormState((formState) => ({
+          ...formState,
+          isLoading: !formState.isLoading,
+          isValid: !formState.isValid,
+        }));
+      }
     }
   };
   return (
     <Container maxWidth="sm" className={classes.widthForm}>
       <div className={classes.paper}>
+        {result && (
+          <div className="alert-field">
+            <Alert
+              message="Incorrect username or password"
+              type="error"
+              showIcon
+            />
+          </div>
+        )}
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
@@ -98,6 +209,7 @@ export default function SignIn() {
             name="email"
             autoComplete="email"
             autoFocus
+            onChange={handleChange}
           />
           <TextField
             variant="outlined"
@@ -109,6 +221,7 @@ export default function SignIn() {
             type="password"
             id="password"
             autoComplete="current-password"
+            onChange={handleChange}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
@@ -120,7 +233,14 @@ export default function SignIn() {
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={(e) => {
+              handleSignup(e);
+            }}
+            disabled={formState.isValid}
           >
+            {formState.isLoading && (
+              <CircularProgress size={20} style={{ marginRight: '5px' }} />
+            )}
             Sign In
           </Button>
           <div style={{ width: '100%', textAlign: 'center' }}>
