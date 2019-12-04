@@ -89,7 +89,8 @@ const NormalNavbar = (props) => {
     </Menu>
   );
   const fetchApiUserInfo = async () => {
-    const token = JSON.parse(localStorage.getItem('token'));
+    // eslint-disable-next-line no-undef
+    const token = localStorage.getItem('token');
     if (token) {
       try {
         const Authorization = `Bearer ${token}`;
@@ -102,16 +103,16 @@ const NormalNavbar = (props) => {
           setProfileUser(res.data.user);
           // prof = res.data.user;
           // console.log("sdsd",prof);
-          //return prof;
+          // return prof;
         }
       } catch (e) {
         console.log(e);
       }
     }
-  }
- useEffect(() => {
-    fetchApiUserInfo(profileUser)
-  },profileUser);
+  };
+  useEffect(() => {
+    fetchApiUserInfo(profileUser);
+  }, profileUser);
 
   return (
     <Toolbar className={classes.toolbar}>
