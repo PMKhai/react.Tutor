@@ -71,9 +71,7 @@ const useStyles = makeStyles((theme) => ({
 
 const NormalNavbar = (props) => {
   const classes = useStyles();
-  let prof = null;
-  let [profileUser, setProfileUser] = useState(null);
-  let isLogged = false;
+  const [profileUser, setProfileUser] = useState(null);
   const menu = (profileUser) => (
     <Menu>
       <Menu.Item>
@@ -84,7 +82,7 @@ const NormalNavbar = (props) => {
         <Link to="/profile">Profile</Link>
       </Menu.Item>
       <Menu.Item>
-        <Link to="/signin">Logout</Link>
+        <Link onClick={() => {localStorage.clear()}} to="/signin">Logout</Link>
       </Menu.Item>
     </Menu>
   );
@@ -97,12 +95,7 @@ const NormalNavbar = (props) => {
           headers: { Authorization },
         });
         if (res.data.returncode === 1) {
-          // eslint-disable-next-line no-undef
-          // setIsLogged(true);
-          setProfileUser(res.data.user);
-          // prof = res.data.user;
-          // console.log("sdsd",prof);
-          //return prof;
+          setProfileUser(res.data.user); 
         }
       } catch (e) {
         console.log(e);

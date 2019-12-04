@@ -61,9 +61,6 @@ export default function SignIn(props) {
     isLoading: false,
   });
   const [result, setResult] = useState(false);
-  useEffect(() => {
-    localStorage.clear();
-  }, []);
   const handleChange = (event) => {
     event.persist();
 
