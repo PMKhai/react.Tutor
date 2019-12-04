@@ -87,7 +87,8 @@ const NormalNavbar = (props) => {
     </Menu>
   );
   const fetchApiUserInfo = async () => {
-    const token = JSON.parse(localStorage.getItem('token'));
+    // eslint-disable-next-line no-undef
+    const token = localStorage.getItem('token');
     if (token) {
       try {
         const Authorization = `Bearer ${token}`;
@@ -101,10 +102,10 @@ const NormalNavbar = (props) => {
         console.log(e);
       }
     }
-  }
- useEffect(() => {
-    fetchApiUserInfo(profileUser)
-  },profileUser);
+  };
+  useEffect(() => {
+    fetchApiUserInfo(profileUser);
+  }, profileUser);
 
   return (
     <Toolbar className={classes.toolbar}>
