@@ -95,9 +95,8 @@ const Signup = (props) => {
       const res = await axios.post(api, formState.values);
       if (res.data.returncode === 1) {
         props.history.push('/signin');
-      }
-      else {
-        alert(res.data.message)
+      } else {
+        alert(res.data.message);
       }
     } catch (err) {
       alert(err.message);

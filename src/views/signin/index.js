@@ -61,6 +61,9 @@ export default function SignIn(props) {
     isLoading: false,
   });
   const [result, setResult] = useState(false);
+  useEffect(() => {
+    localStorage.clear();
+  }, []);
   const handleChange = (event) => {
     event.persist();
 
@@ -76,7 +79,40 @@ export default function SignIn(props) {
       },
     }));
   };
-  const handleSignup = async (e) => {
+  const handleApiLogin = async (user) => {
+    const res = await axios.post(apiLogin, user);
+    if (res.data.returncode === 1) {
+      // eslint-disable-next-line no-undef
+      localStorage.setItem('token', JSON.stringify(res.data.token));
+      props.history.push('/home');
+    } else {
+      setResult(res.data.returnmessage);
+      setFormState((formState) => ({
+        ...formState,
+        isLoading: !formState.isLoading,
+        isValid: !formState.isValid,
+      }));
+    }
+  };
+  const handleApiSocialLogin = async (user) => {
+    let res = await axios.post(apiRegister, user);
+    if (res.data) {
+      res = await axios.post(apiLogin, user);
+      if (res.data.returncode === 1) {
+        // eslint-disable-next-line no-undef
+        localStorage.setItem('token', JSON.stringify(res.data.token));
+        props.history.push('/home');
+      } else {
+        setResult(res.data.returnmessage);
+        setFormState((formState) => ({
+          ...formState,
+          isLoading: !formState.isLoading,
+          isValid: !formState.isValid,
+        }));
+      }
+    }
+  };
+  const handleSignIn = async (e) => {
     try {
       e.preventDefault();
 
@@ -85,15 +121,9 @@ export default function SignIn(props) {
         isLoading: !formState.isLoading,
         isValid: !formState.isValid,
       }));
-      console.log(formState.values);
-      const res = await axios.post(apiLogin, formState.values);
-      if (res.data.returncode === 1) {
-        props.history.push('/home');
-      } else {
-        console.log('resdata', res.data);
-      }
+      handleApiLogin(formState.values);
     } catch (err) {
-      setResult(true);
+      setResult('Failed to fetch');
       setFormState((formState) => ({
         ...formState,
         isLoading: !formState.isLoading,
@@ -117,22 +147,15 @@ export default function SignIn(props) {
       user.email = email;
       user.name = name;
       user.urlAvatar = picture.data.url;
-      let res = await axios.post(apiRegister, user);
-      if (res.data.returncode === 1) {
-        res = await axios.post(apiLogin, user);
-        if (res.data.returncode === 1) {
-          props.history.push('/home');
-        }
-      }
+      handleApiSocialLogin(user);
     } catch (e) {
       try {
         const res = await axios.post(apiLogin, user);
         if (res.data.returncode === 1) {
           props.history.push('/home');
         }
-      } catch (e) {
-        console.log(e);
-        setResult(true);
+      } catch (err) {
+        setResult('Failed to fetch');
         setFormState((formState) => ({
           ...formState,
           isLoading: !formState.isLoading,
@@ -156,22 +179,15 @@ export default function SignIn(props) {
       user.email = email;
       user.name = name;
       user.urlAvatar = imageUrl;
-      let res = await axios.post(apiRegister, user);
-      if (res.data.returncode === 1) {
-        res = await axios.post(apiLogin, user);
-        if (res.data.returncode === 1) {
-          props.history.push('/home');
-        }
-      }
+      handleApiSocialLogin(user);
     } catch (e) {
       try {
         const res = await axios.post(apiLogin, user);
         if (res.data.returncode === 1) {
           props.history.push('/home');
         }
-      } catch (e) {
-        console.log(e);
-        setResult(true);
+      } catch (err) {
+        setResult('Failed to fetch');
         setFormState((formState) => ({
           ...formState,
           isLoading: !formState.isLoading,
@@ -185,11 +201,7 @@ export default function SignIn(props) {
       <div className={classes.paper}>
         {result && (
           <div className="alert-field">
-            <Alert
-              message="Incorrect username or password"
-              type="error"
-              showIcon
-            />
+            <Alert message={result} type="error" showIcon />
           </div>
         )}
         <Avatar className={classes.avatar}>
@@ -234,7 +246,7 @@ export default function SignIn(props) {
             color="primary"
             className={classes.submit}
             onClick={(e) => {
-              handleSignup(e);
+              handleSignIn(e);
             }}
             disabled={formState.isValid}
           >
@@ -247,29 +259,6 @@ export default function SignIn(props) {
             <Typography>or</Typography>
           </div>
           <Grid container>
-            {
-              /* <Button
-              type="button"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.buttonAuth}
-              style={{ marginRight: '2%', marginBottom: '5px' }}
-            >
-              Facebook
-            </Button>
-            */
-              // <Button
-              //   type="button"
-              //   fullWidth
-              //   variant="contained"
-              //   color="secondary"
-              //   className={classes.buttonAuth}
-              //   style={{ marginBottom: '5px' }}
-              // >
-              // </Button>
-            }
-
             <div>
               <GoogleLogin
                 className="ggBtnLogin"
