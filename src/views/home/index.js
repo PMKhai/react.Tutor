@@ -4,7 +4,7 @@ import Banner from './banner';
 
 const Home = () => (
   <div>
-    <Container>
+    <Container maxWidth="lg">
       <Banner />
     </Container>
   </div>
