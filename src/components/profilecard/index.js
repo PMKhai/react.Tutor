@@ -3,10 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import {
   CardMedia,
   CardContent,
-  CardActions,
   Card,
   CardActionArea,
-  Button,
   Typography,
 } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
@@ -19,10 +17,12 @@ const useStyles = makeStyles({
 });
 const ProfileCard = () => {
   const classes = useStyles();
-
+  const handleClick = () => {
+    console.log('handle...');
+  };
   return (
     <Card className={classes.card}>
-      <CardActionArea>
+      <CardActionArea onClick={handleClick}>
         <CardMedia
           component="img"
           alt="Contemplative Reptile"
@@ -44,11 +44,6 @@ const ProfileCard = () => {
           </Typography>
         </CardContent>
       </CardActionArea>
-      <CardActions style={{ justifyContent: 'flex-end' }}>
-        <Button size="small" color="primary">
-          Detail
-        </Button>
-      </CardActions>
     </Card>
   );
 };
