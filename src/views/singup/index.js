@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Avatar,
   Typography,
   Grid,
   TextField,
-  Link,
   Checkbox,
   Button,
   FormControlLabel,
@@ -256,7 +256,7 @@ const Signup = (props) => {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="/signin" variant="body2">
+              <Link to="/signin" variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>
