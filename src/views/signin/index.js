@@ -103,7 +103,6 @@ export default function SignIn(props) {
         props.history.push('/home');
         // eslint-disable-next-line no-restricted-globals
         location.reload(true);
-        
       } else {
         setResult(res.data.returnmessage);
         setFormState((formState) => ({

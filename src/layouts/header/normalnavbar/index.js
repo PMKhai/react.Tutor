@@ -99,7 +99,7 @@ const NormalNavbar = (props) => {
         });
         if (res.data.returncode === 1) {
           setProfileUser(res.data.user); 
-          console.log("profile,",profileUser);
+          localStorage.setItem('user', JSON.stringify(res.data.user));
         }
       } catch (e) {
         console.log(e);
