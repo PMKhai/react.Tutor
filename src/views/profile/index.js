@@ -119,7 +119,10 @@ const Profile = (props) => {
         headers: { Authorization },
       });
       if (res.data.returncode === 1) {
+        localStorage.setItem('user', JSON.stringify(res.data.newUser));
         props.history.push('/profile');
+        // eslint-disable-next-line no-restricted-globals
+        location.reload(true);
       } else {
         alert(res.data.message);
       }
