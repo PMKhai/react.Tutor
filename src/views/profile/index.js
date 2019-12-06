@@ -17,11 +17,11 @@ import { Form, Input, Select, Upload, message, Progress } from 'antd';
 import { makeStyles } from '@material-ui/core/styles';
 import validate from 'validate.js';
 import axios from 'axios';
-import { PeopleAltOutlined } from '@material-ui/icons';
-import { API, REGISTER } from '../../config';
+import { PeopleAltOutlined, Edit } from '@material-ui/icons';
+import { API, EDIT } from '../../config';
 import { storage } from '../../config/firebase';
 
-const api = `${API}${REGISTER}`;
+const api = `${API}${EDIT}`;
 const beforeUpload = (file) => {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
   if (!isJpgOrPng) {
@@ -102,7 +102,7 @@ const Profile = (props) => {
     urlImage: null,
   });
   // eslint-disable-next-line consistent-return
-  const handleSignup = async (e) => {
+  const handleEdit = async (e) => {
     try {
       e.preventDefault();
 
@@ -111,10 +111,15 @@ const Profile = (props) => {
         isLoading: !formState.isLoading,
         isValid: !formState.isValid,
       }));
-
-      const res = await axios.post(api, formState.values);
+    //   const { urlAvatar } = uploadState;
+    //   formState.values.urlAvatar = urlAvatar || formState.values.urlAvatar;
+      const token = JSON.parse(localStorage.getItem('token'));
+      const Authorization = `Bearer ${token}`;
+      const res = await axios.put(api, formState.values, {
+        headers: { Authorization },
+      });
       if (res.data.returncode === 1) {
-        props.history.push('/signin');
+        props.history.push('/profile');
       } else {
         alert(res.data.message);
       }
@@ -137,7 +142,7 @@ const Profile = (props) => {
         (snapshot) => {
           // progrss function ....
           const progress = Math.round(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
           );
           setUploadState({ loading: true, uploading: false, progress });
         },
@@ -155,7 +160,7 @@ const Profile = (props) => {
               console.log('urlImage', urlImage);
               setUploadState({ urlImage });
             });
-        },
+        }
       );
     }
   };
@@ -234,8 +239,12 @@ const Profile = (props) => {
                     />
                   )}
                 </Upload>
-                {uploadState.uploading && <CircularProgress size={20} style={{ marginLeft: '170px' }} />}
-                {uploadState.loading && <Progress percent={uploadState.progress} />}
+                {uploadState.uploading && (
+                  <CircularProgress size={20} style={{ marginLeft: '170px' }} />
+                )}
+                {uploadState.loading && (
+                  <Progress percent={uploadState.progress} />
+                )}
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -327,6 +336,24 @@ const Profile = (props) => {
                   rows="10"
                 />
               </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  type="number"
+                  name="price"
+                  label="$ Hourly Rate "
+                  id="price"
+                  autoComplete="price"
+                  error={hasError('price')}
+                  helperText={
+                    hasError('price') ? formState.errors.price[0] : null
+                  }
+                  onChange={handleChange}
+                  value={formState.values.price || ''}
+                />
+              </Grid>
             </Grid>
             <Button
               type="submit"
@@ -335,9 +362,9 @@ const Profile = (props) => {
               color="primary"
               className={classes.submit}
               onClick={(e) => {
-                handleSignup(e);
+                handleEdit(e);
               }}
-              disabled={!formState.isValid}
+              //disabled={!formState.isValid}
             >
               {formState.isLoading && (
                 <CircularProgress size={20} style={{ marginRight: '5px' }} />

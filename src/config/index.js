@@ -3,3 +3,4 @@ export const API = 'http://localhost:8000/';
 export const LOGIN = 'user/login';
 export const REGISTER = 'user/register';
 export const GETME = 'me';
+export const EDIT = 'user/edit';
