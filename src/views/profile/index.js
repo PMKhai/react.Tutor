@@ -111,8 +111,8 @@ const Profile = (props) => {
         isLoading: !formState.isLoading,
         isValid: !formState.isValid,
       }));
-    //   const { urlAvatar } = uploadState;
-    //   formState.values.urlAvatar = urlAvatar || formState.values.urlAvatar;
+      const { urlImage } = uploadState;
+      formState.values.urlAvatar = urlImage || formState.values.urlAvatar;
       const token = JSON.parse(localStorage.getItem('token'));
       const Authorization = `Bearer ${token}`;
       const res = await axios.put(api, formState.values, {
@@ -217,7 +217,8 @@ const Profile = (props) => {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Upload
-                  name="avatar"
+                  name="urlAvatar"
+                  id="urlAvatar"
                   listType="picture-card"
                   className="avatar-uploader"
                   showUploadList={false}
