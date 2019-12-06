@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Typography,
   IconButton,
   Button,
   Toolbar,
+  Link as LinkHref,
   InputBase,
 } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import { Menu, Dropdown, Icon, Avatar } from 'antd';
 import { Search } from '@material-ui/icons';
 import { makeStyles, fade } from '@material-ui/core/styles';
@@ -82,12 +84,13 @@ const NormalNavbar = (props) => {
         <Link to="/profile">Profile</Link>
       </Menu.Item>
       <Menu.Item>
-        <Link onClick={() => {localStorage.clear();}} to="/signin">Logout</Link>
+        <LinkHref onClick={() => {localStorage.clear()}} href="/signin" underline="none">Logout</LinkHref>
       </Menu.Item>
     </Menu>
   );
   const fetchApiUserInfo = async () => {
     const token = JSON.parse(localStorage.getItem('token'));
+    console.log("asdasdsad");
     if (token) {
       try {
         const Authorization = `Bearer ${token}`;
@@ -96,15 +99,16 @@ const NormalNavbar = (props) => {
         });
         if (res.data.returncode === 1) {
           setProfileUser(res.data.user); 
+          console.log("profile,",profileUser);
         }
       } catch (e) {
         console.log(e);
       }
     }
-  }
- useEffect(() => {
-    fetchApiUserInfo(profileUser)
-  },profileUser);
+  };
+  useEffect(() => {
+    fetchApiUserInfo();
+  }, []);
 
   return (
     <Toolbar className={classes.toolbar}>
@@ -144,12 +148,12 @@ const NormalNavbar = (props) => {
           size="small"
           className={classes.customButton}
         >
-          Sign up
+          <Link to="/signin">Sign in</Link>
         </Button>
       )}
       {!profileUser && (
         <Button variant="outlined" color="secondary" size="small">
-          Sign in
+          <Link to="/signup" color="secondary">Sign up</Link>
         </Button>
       )}
     </Toolbar>

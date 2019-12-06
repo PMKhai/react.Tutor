@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './style.css';
 import { Alert } from 'antd';
+import { Link } from 'react-router-dom';
 import {
   Avatar,
   Button,
   TextField,
   FormControlLabel,
   Checkbox,
-  Link,
   Grid,
   Typography,
   Container,
@@ -82,6 +82,8 @@ export default function SignIn(props) {
       // eslint-disable-next-line no-undef
       localStorage.setItem('token', JSON.stringify(res.data.token));
       props.history.push('/home');
+      // eslint-disable-next-line no-restricted-globals
+      location.reload(true);
     } else {
       setResult(res.data.returnmessage);
       setFormState((formState) => ({
@@ -99,6 +101,9 @@ export default function SignIn(props) {
         // eslint-disable-next-line no-undef
         localStorage.setItem('token', JSON.stringify(res.data.token));
         props.history.push('/home');
+        // eslint-disable-next-line no-restricted-globals
+        location.reload(true);
+        
       } else {
         setResult(res.data.returnmessage);
         setFormState((formState) => ({
@@ -237,7 +242,6 @@ export default function SignIn(props) {
             label="Remember me"
           />
           <Button
-            type="submit"
             fullWidth
             variant="contained"
             color="primary"
@@ -276,12 +280,12 @@ export default function SignIn(props) {
           </Grid>
           <Grid container>
             <Grid item xs>
-              <Link href="/forgotpassword" variant="body2">
+              <Link to="/forgotpassword" variant="body2">
                 Forgot password?
               </Link>
             </Grid>
             <Grid item>
-              <Link href="/signup" variant="body2">
+              <Link to="/signup" variant="body2">
                 Don't have an account? Sign Up
               </Link>
             </Grid>
