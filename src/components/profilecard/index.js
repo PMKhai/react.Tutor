@@ -6,20 +6,25 @@ import {
   Card,
   CardActionArea,
   Typography,
+  Chip,
 } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
-import { Tag } from 'antd';
 
 const useStyles = makeStyles({
   card: {
     maxWidth: 250,
   },
+  chip: {
+    marginRight: '5px',
+  },
 });
-const ProfileCard = () => {
+const ProfileCard = (props) => {
   const classes = useStyles();
+
   const handleClick = () => {
-    console.log('handle...');
+    props.history.push('/view?id=111');
   };
+
   return (
     <Card className={classes.card}>
       <CardActionArea onClick={handleClick}>
@@ -36,12 +41,11 @@ const ProfileCard = () => {
             <Typography>1 USD/h</Typography>
           </Typography>
           <Rating name="read-only" value={3} readOnly />
-          <Typography variant="body2" component="p">
-            <Tag color="cyan">Toán</Tag>
-            <Tag color="cyan">Toán</Tag>
-            <Tag color="cyan">Toán</Tag>
-            <Tag color="cyan">Toán</Tag>
-          </Typography>
+          <div>
+            <Chip label="Toán" className={classes.chip} />
+            <Chip label="Toán" className={classes.chip} />
+            <Chip label="Tin học" className={classes.chip} />
+          </div>
         </CardContent>
       </CardActionArea>
     </Card>
