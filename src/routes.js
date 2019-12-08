@@ -6,6 +6,7 @@ import Home from './views/home';
 import SignIn from './views/signin';
 import SignUp from './views/singup';
 import Profile from './views/profile';
+import ShowProfile from './views/showprofile';
 
 const Routes = () => (
   <Switch>
@@ -32,6 +33,12 @@ const Routes = () => (
       exact
       layout={NormalLayout}
       path="/profile"
+    />
+    <RouteWithLayout
+      component={ShowProfile}
+      exact
+      layout={NormalLayout}
+      path="/view"
     />
     <Redirect exact from="/" to="home" />
   </Switch>
