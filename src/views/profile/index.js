@@ -5,15 +5,15 @@ import {
   Typography,
   Grid,
   TextField,
-  Checkbox,
   Button,
-  FormControlLabel,
   Container,
   CircularProgress,
+  Chip,
 } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import 'antd/dist/antd.css';
 import './style.css';
-import { Form, Input, Select, Upload, message, Progress } from 'antd';
+import { Alert, Upload, message, Progress, AutoComplete } from 'antd';
 import { makeStyles } from '@material-ui/core/styles';
 import validate from 'validate.js';
 import axios from 'axios';
@@ -21,6 +21,11 @@ import { PeopleAltOutlined, Edit } from '@material-ui/icons';
 import { API, EDIT } from '../../config';
 import { storage } from '../../config/firebase';
 
+
+//
+//
+const listSkill = ['Math', 'Physic', 'Literature', 'Chemistry'];
+//
 const api = `${API}${EDIT}`;
 const beforeUpload = (file) => {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
@@ -88,6 +93,7 @@ const schema = {
 const Profile = (props) => {
   const classes = useStyles();
   const user = JSON.parse(localStorage.getItem('user'));
+  const token = JSON.parse(localStorage.getItem('token'));
   const [formState, setFormState] = useState({
     isValid: false,
     values: user,
@@ -99,7 +105,11 @@ const Profile = (props) => {
     uploading: false,
     loading: false,
     progress: 0,
-    urlImage: null,
+    urlAvatar: null,
+  });
+  const [alert, setAlert] = useState({
+    type: 'error',
+    message: null,
   });
   // eslint-disable-next-line consistent-return
   const handleEdit = async (e) => {
@@ -111,9 +121,10 @@ const Profile = (props) => {
         isLoading: !formState.isLoading,
         isValid: !formState.isValid,
       }));
-      const { urlImage } = uploadState;
-      formState.values.urlAvatar = urlImage || formState.values.urlAvatar;
-      const token = JSON.parse(localStorage.getItem('token'));
+      const { urlAvatar } = uploadState;
+      formState.values.urlAvatar = urlAvatar || formState.values.urlAvatar;
+      
+
       const Authorization = `Bearer ${token}`;
       const res = await axios.put(api, formState.values, {
         headers: { Authorization },
@@ -123,11 +134,26 @@ const Profile = (props) => {
         props.history.push('/profile');
         // eslint-disable-next-line no-restricted-globals
         location.reload(true);
+        setAlert({
+          type: 'success',
+          message: res.data.returnmessage,
+        });
       } else {
-        alert(res.data.message);
+        setAlert({ ...alert, message: res.data.returnmessage });
       }
+
+      setFormState((formState) => ({
+        ...formState,
+        isLoading: !formState.isLoading,
+        isValid: !formState.isValid,
+      }));
     } catch (err) {
-      alert(err.message);
+      setAlert({ ...alert, message: err.message });
+      setFormState((formState) => ({
+        ...formState,
+        isLoading: !formState.isLoading,
+        isValid: !formState.isValid,
+      }));
     }
   };
   const handleUploadChange = (info) => {
@@ -159,28 +185,28 @@ const Profile = (props) => {
             .ref('images')
             .child(image.name)
             .getDownloadURL()
-            .then((urlImage) => {
-              console.log('urlImage', urlImage);
-              setUploadState({ urlImage });
+            .then((urlAvatar) => {
+              console.log('urlAvatar', urlAvatar);
+              setUploadState({ urlAvatar });
             });
         }
       );
     }
   };
-  const handleChange = (event) => {
+  const handleChange = (event, value) => {
     event.persist();
-
-    setFormState((formState) => ({
+    setFormState({
       ...formState,
       values: {
         ...formState.values,
+        skills: value,
         [event.target.name]: event.target.value,
       },
       touched: {
         ...formState.touched,
         [event.target.name]: true,
       },
-    }));
+    });
   };
 
   useEffect(() => {
@@ -196,19 +222,14 @@ const Profile = (props) => {
   const hasError = (field) =>
     !!(formState.touched[field] && formState.errors[field]);
 
-  const handleClick = () => {
-    setFormState((formState) => ({
-      ...formState,
-      values: {
-        ...formState.values,
-        isTutor: !formState.values.isTutor,
-      },
-    }));
-  };
-
   return (
     <Container maxWidth="sm" className={classes.widthForm}>
       <div className={classes.paper}>
+        {alert.message && (
+          <div className="alert-field">
+            <Alert message={alert.message} type={alert.type} showIcon />
+          </div>
+        )}
         <Avatar className={classes.avatar}>
           <PeopleAltOutlined />
         </Avatar>
@@ -229,9 +250,9 @@ const Profile = (props) => {
                   beforeUpload={beforeUpload}
                   onChange={handleUploadChange}
                 >
-                  {uploadState.urlImage ? (
+                  {uploadState.urlAvatar ? (
                     <img
-                      src={uploadState.urlImage}
+                      src={uploadState.urlAvatar}
                       alt="avatar"
                       style={{ width: '100%', height: '100%' }}
                     />
@@ -322,22 +343,25 @@ const Profile = (props) => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  name="overview"
-                  label="Overview"
-                  id="overview"
-                  autoComplete="overview"
-                  error={hasError('overview')}
-                  helperText={
-                    hasError('overview') ? formState.errors.overview[0] : null
-                  }
+                <Autocomplete
+                  multiple
+                  id="skills"
+                  name="skills"
+                  options={listSkill}
+                  filterSelectedOptions
+                  value={formState.values.skills || ''}
                   onChange={handleChange}
-                  value={formState.values.overview || ''}
-                  multiline="true"
-                  rows="10"
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      required
+                      variant="outlined"
+                      label="Skills"
+                      placeholder="Enter skills here"
+                      margin="normal"
+                      fullWidth
+                    />
+                  )}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -358,6 +382,25 @@ const Profile = (props) => {
                   value={formState.values.price || ''}
                 />
               </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="overview"
+                  label="Overview"
+                  id="overview"
+                  autoComplete="overview"
+                  error={hasError('overview')}
+                  helperText={
+                    hasError('overview') ? formState.errors.overview[0] : null
+                  }
+                  onChange={handleChange}
+                  value={formState.values.overview || ''}
+                  multiline="true"
+                  rows="10"
+                />
+              </Grid>
             </Grid>
             <Button
               type="submit"
@@ -368,7 +411,7 @@ const Profile = (props) => {
               onClick={(e) => {
                 handleEdit(e);
               }}
-              //disabled={!formState.isValid}
+              disabled={formState.isValid}
             >
               {formState.isLoading && (
                 <CircularProgress size={20} style={{ marginRight: '5px' }} />

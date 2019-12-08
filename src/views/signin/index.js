@@ -55,12 +55,12 @@ export default function SignIn(props) {
   const classes = useStyles();
   const [formState, setFormState] = useState({
     isValid: false,
-    values: { isTutor: false },
+    values: {},
     touched: {},
     errors: {},
     isLoading: false,
   });
-  const [result, setResult] = useState(false);
+  const [alert, setAlert] = useState(false);
   const handleChange = (event) => {
     event.persist();
 
@@ -85,7 +85,7 @@ export default function SignIn(props) {
       // eslint-disable-next-line no-restricted-globals
       location.reload(true);
     } else {
-      setResult(res.data.returnmessage);
+      setAlert(res.data.returnmessage);
       setFormState((formState) => ({
         ...formState,
         isLoading: !formState.isLoading,
@@ -104,7 +104,7 @@ export default function SignIn(props) {
         // eslint-disable-next-line no-restricted-globals
         location.reload(true);
       } else {
-        setResult(res.data.returnmessage);
+        setAlert(res.data.returnmessage);
         setFormState((formState) => ({
           ...formState,
           isLoading: !formState.isLoading,
@@ -124,7 +124,7 @@ export default function SignIn(props) {
       }));
       handleApiLogin(formState.values);
     } catch (err) {
-      setResult('Failed to fetch');
+      setAlert('Failed to fetch');
       setFormState((formState) => ({
         ...formState,
         isLoading: !formState.isLoading,
@@ -156,7 +156,7 @@ export default function SignIn(props) {
           props.history.push('/home');
         }
       } catch (err) {
-        setResult('Failed to fetch');
+        setAlert('Failed to fetch');
         setFormState((formState) => ({
           ...formState,
           isLoading: !formState.isLoading,
@@ -188,7 +188,7 @@ export default function SignIn(props) {
           props.history.push('/home');
         }
       } catch (err) {
-        setResult('Failed to fetch');
+        setAlert('Failed to fetch');
         setFormState((formState) => ({
           ...formState,
           isLoading: !formState.isLoading,
@@ -200,9 +200,9 @@ export default function SignIn(props) {
   return (
     <Container maxWidth="sm" className={classes.widthForm}>
       <div className={classes.paper}>
-        {result && (
+        {alert && (
           <div className="alert-field">
-            <Alert message={result} type="error" showIcon />
+            <Alert message={alert} type="error" showIcon />
           </div>
         )}
         <Avatar className={classes.avatar}>

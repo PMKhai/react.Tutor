@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Alert } from 'antd';
 import {
   Avatar,
   Typography,
@@ -80,7 +81,10 @@ const Signup = (props) => {
     errors: {},
     isLoading: false,
   });
-
+  const [alert, setAlert] = useState({
+    type: 'error',
+    message: null,
+  });
   // eslint-disable-next-line consistent-return
   const handleSignup = async (e) => {
     try {
@@ -95,11 +99,25 @@ const Signup = (props) => {
       const res = await axios.post(api, formState.values);
       if (res.data.returncode === 1) {
         props.history.push('/signin');
+        setAlert({
+          type: 'success',
+          message: res.data.returnmessage,
+        });
       } else {
-        alert(res.data.message);
+        setAlert({ ...alert, message: res.data.returnmessage });
+        setFormState((formState) => ({
+          ...formState,
+          isLoading: !formState.isLoading,
+          isValid: !formState.isValid,
+        }));
       }
     } catch (err) {
-      alert(err.message);
+      setAlert({ ...alert, message: err.message });
+      setFormState((formState) => ({
+        ...formState,
+        isLoading: !formState.isLoading,
+        isValid: !formState.isValid,
+      }));
     }
   };
 
@@ -145,6 +163,11 @@ const Signup = (props) => {
   return (
     <Container maxWidth="sm" className={classes.widthForm}>
       <div className={classes.paper}>
+      {alert.message && (
+          <div className="alert-field">
+            <Alert message={alert.message} type={alert.type} showIcon />
+          </div>
+        )}
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
