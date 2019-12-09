@@ -28,8 +28,9 @@ const ProfileCard = (props) => {
   };
 
   const displaySkills = skills
-    ? skills.map((skill, key) => (
-        <Chip label={skill} key={key} className={classes.chip} />
+    ? skills.map((skill) => (
+        // eslint-disable-next-line react/jsx-indent
+        <Chip label={skill} key={skill} className={classes.chip} />
       ))
     : null;
 
@@ -46,9 +47,9 @@ const ProfileCard = (props) => {
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
             {name}
-            <Typography>{price} USD/h</Typography>
+            <Typography>{price || 0} USD/h</Typography>
           </Typography>
-          <Rating name="read-only" value={rating} readOnly />
+          <Rating name="read-only" value={rating || 0} readOnly />
           <div>{displaySkills}</div>
         </CardContent>
       </CardActionArea>

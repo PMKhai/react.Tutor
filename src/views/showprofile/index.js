@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Card,
   CardMedia,
@@ -8,15 +8,20 @@ import {
   Button,
   Chip,
 } from '@material-ui/core';
+import axios from 'axios';
 import { Rating } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
+import { API, VIEWTUTOR } from '../../config';
+
+const api = `${API}${VIEWTUTOR}`;
 
 const useStyles = makeStyles({
   card: {
     maxWidth: 345,
+    minWidth: 345,
   },
   media: {
-    height: 200,
+    height: 276,
   },
   chip: {
     marginRight: '5px',
@@ -27,31 +32,51 @@ const useStyles = makeStyles({
 const ShowProfile = (props) => {
   const classes = useStyles();
 
-  useEffect(() => {}, []);
+  // eslint-disable-next-line react/destructuring-assignment
+  const { search } = props.location;
+  const [profile, setProfile] = useState({});
+
+  const fecthTutorInfo = async () => {
+    try {
+      const res = await axios.get(`${api}${search}`);
+      const { tutorInfo, returncode, returnMessage } = res.data;
+      if (returncode === 0) setProfile(() => tutorInfo);
+      else console.log(returnMessage);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const { skills } = profile;
+  const displaySkills = skills
+    ? skills.map((skill) => (
+        // eslint-disable-next-line react/jsx-indent
+        <Chip label={skill} key={skill} className={classes.chip} />
+      ))
+    : null;
+
+  useEffect(() => {
+    fecthTutorInfo();
+  }, []);
 
   return (
     <Card className={classes.card}>
       <CardMedia
         className={classes.media}
-        image="https://scontent.fsgn2-1.fna.fbcdn.net/v/t1.0-9/s960x960/64587413_1161079827404829_7900354979624386560_o.jpg?_nc_cat=107&_nc_ohc=7xgG5BNr6HsAQnnuVMaYrBo2v17vjHH1BrESbqmt5hprwBsZxbWvxQjIQ&_nc_ht=scontent.fsgn2-1.fna&oh=30bdeaeaaf5347da499581278c6413a0&oe=5E7BB526"
-        title="Contemplative Reptile"
+        image={profile.urlAvatar}
+        title={profile.name}
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="h2">
-          Lizard
-          <Typography>1 USD/h</Typography>
+          {profile.name}
+          <Typography>{profile.price || 0} USD/h</Typography>
         </Typography>
-        <Rating name="read-only" value={3} readOnly />
+        <Rating name="read-only" value={profile.rating} readOnly />
 
         <Typography variant="body2" color="textSecondary" component="p">
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
+          {profile.overview || 'Awaiting update...'}
         </Typography>
-        <div>
-          <Chip label="Toán" className={classes.chip} />
-          <Chip label="Toán" className={classes.chip} />
-          <Chip label="Tin học" className={classes.chip} />
-        </div>
+        <div>{displaySkills}</div>
       </CardContent>
       <CardActions>
         <Button size="small" color="primary" style={{ width: '100%' }}>
