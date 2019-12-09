@@ -10,6 +10,9 @@ import {
   CircularProgress,
   Chip,
 } from '@material-ui/core';
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+// If you want to use the provided css
+import 'react-google-places-autocomplete/dist/assets/index.css';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import 'antd/dist/antd.css';
 import './style.css';
@@ -20,7 +23,6 @@ import axios from 'axios';
 import { PeopleAltOutlined, Edit } from '@material-ui/icons';
 import { API, EDIT } from '../../config';
 import { storage } from '../../config/firebase';
-
 
 //
 //
@@ -111,6 +113,9 @@ const Profile = (props) => {
     type: 'error',
     message: null,
   });
+  const [placeSate, setPlace] = useState({
+    address: formState.values.address,
+  });
   // eslint-disable-next-line consistent-return
   const handleEdit = async (e) => {
     try {
@@ -122,8 +127,9 @@ const Profile = (props) => {
         isValid: !formState.isValid,
       }));
       const { urlAvatar } = uploadState;
+      const { address } = placeSate;
       formState.values.urlAvatar = urlAvatar || formState.values.urlAvatar;
-      
+      formState.values.address = address || formState.values.address;
 
       const Authorization = `Bearer ${token}`;
       const res = await axios.put(api, formState.values, {
@@ -199,7 +205,7 @@ const Profile = (props) => {
       ...formState,
       values: {
         ...formState.values,
-        skills: value,
+        skills: value || formState.values.skills,
         [event.target.name]: event.target.value,
       },
       touched: {
@@ -207,6 +213,7 @@ const Profile = (props) => {
         [event.target.name]: true,
       },
     });
+    console.log('ad', formState.values);
   };
 
   useEffect(() => {
@@ -326,20 +333,27 @@ const Profile = (props) => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="address"
-                  label="Address"
-                  name="address"
-                  autoComplete="address"
-                  error={hasError('address')}
-                  helperText={
-                    hasError('address') ? formState.errors.address[0] : null
-                  }
-                  onChange={handleChange}
-                  value={formState.values.address || ''}
+                <GooglePlacesAutocomplete
+                  onSelect={(value) => setPlace({ address: value.description })}
+                  initialValue={placeSate.address || ''}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      required
+                      fullWidth
+                      id="address"
+                      label="Address"
+                      name="address"
+                      autoComplete="address"
+                      error={hasError('address')}
+                      helperText={
+                        hasError('address') ? formState.errors.address[0] : null
+                      }
+                      // onChange={handleSelect}
+                      //  value={formState.values.address || ''}
+                    />
+                  )}
                 />
               </Grid>
               <Grid item xs={12}>
