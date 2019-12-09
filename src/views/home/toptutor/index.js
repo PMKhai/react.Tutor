@@ -3,42 +3,38 @@ import { Grid } from '@material-ui/core';
 import ProfileCard from '../../../components/profilecard';
 
 const TopTutor = (props) => {
-  const { ...rest } = props;
+  const { tutor, ...rest } = props;
+  const display = tutor
+    ? tutor.map((tutor) => {
+        // eslint-disable-next-line no-underscore-dangle
+        const path = `/view?id=${tutor._id}`;
+        return (
+          <Grid
+            item
+            xs={6}
+            sm={3}
+            // eslint-disable-next-line no-underscore-dangle
+            key={tutor._id}
+            style={{ display: 'flex', justifyContent: 'center' }}
+          >
+            <ProfileCard
+              path={path}
+              name={tutor.name}
+              rating={tutor.rating}
+              price={tutor.price}
+              urlAvatar={tutor.urlAvatar}
+              skills={tutor.skills}
+              {...rest}
+            />
+          </Grid>
+          // eslint-disable-next-line indent
+        );
+      })
+    : null;
 
   return (
     <Grid container justify="space-around">
-      <Grid
-        item
-        xs={6}
-        sm={3}
-        style={{ display: 'flex', justifyContent: 'center' }}
-      >
-        <ProfileCard path="/view?id=111" {...rest} />
-      </Grid>
-      <Grid
-        item
-        xs={6}
-        sm={3}
-        style={{ display: 'flex', justifyContent: 'center' }}
-      >
-        <ProfileCard path="/view?id=111" {...rest} />
-      </Grid>
-      <Grid
-        item
-        xs={6}
-        sm={3}
-        style={{ display: 'flex', justifyContent: 'center' }}
-      >
-        <ProfileCard path="/view?id=111" {...rest} />
-      </Grid>
-      <Grid
-        item
-        xs={6}
-        sm={3}
-        style={{ display: 'flex', justifyContent: 'center' }}
-      >
-        <ProfileCard path="/view?id=111" {...rest} />
-      </Grid>
+      {display}
     </Grid>
   );
 };
