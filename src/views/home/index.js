@@ -18,7 +18,7 @@ const Home = (props) => {
       const res = await axios.get(api);
       const { topTutor, returncode } = res.data;
 
-      if (returncode === 0) {
+      if (returncode === 1) {
         setTutorListing(() => topTutor);
       }
     } catch (err) {
@@ -52,8 +52,7 @@ const Home = (props) => {
           <Link
             color="inherit"
             variant="body2"
-            href="/"
-            to="/"
+            to="/tutor/all"
             style={{ flexShrink: '0', marginRight: '20px' }}
           >
             See more...

@@ -7,6 +7,7 @@ import SignIn from './views/signin';
 import SignUp from './views/singup';
 import Profile from './views/profile';
 import ShowProfile from './views/showprofile';
+import TutorListing from './views/tutorlisting';
 
 const Routes = () => (
   <Switch>
@@ -39,6 +40,12 @@ const Routes = () => (
       exact
       layout={NormalLayout}
       path="/view"
+    />
+    <RouteWithLayout
+      component={TutorListing}
+      exact
+      layout={NormalLayout}
+      path="/tutor/all"
     />
     <Redirect exact from="/" to="home" />
   </Switch>

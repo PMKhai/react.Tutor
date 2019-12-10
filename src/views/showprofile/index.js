@@ -40,7 +40,7 @@ const ShowProfile = (props) => {
     try {
       const res = await axios.get(`${api}${search}`);
       const { tutorInfo, returncode, returnMessage } = res.data;
-      if (returncode === 0) setProfile(() => tutorInfo);
+      if (returncode === 1) setProfile(() => tutorInfo);
       else console.log(returnMessage);
     } catch (err) {
       console.log(err);
