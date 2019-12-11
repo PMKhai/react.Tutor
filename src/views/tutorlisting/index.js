@@ -96,7 +96,8 @@ const TutorListing = (props) => {
     const temp = tutorListing.length;
     setOffset(0);
     setTotal(temp);
-    const display = _.slice(tutorListing, offset, offset + LIMITPERPAGE);
+    console.log("see all click",tutorListing)
+    const display = _.slice(tutorListing, offset,offset + LIMITPERPAGE);
     setDisplayListing(display);
   };
 
@@ -117,13 +118,15 @@ const TutorListing = (props) => {
     setTotal(temp);
 
     const display = _.slice(filterTutor, 0, LIMITPERPAGE);
+    console.log("filter click",tutorListing)
     setDisplayListing(display);
   };
 
   useEffect(() => {
     fetchTutorListing();
-    // handleFilterClick();
+    handleSeeAllClick();
     setTotal(tutorListing.lenght);
+    setOffset(0);
   }, []);
 
   const classes = useStyles();
