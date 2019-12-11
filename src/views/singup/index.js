@@ -95,7 +95,7 @@ const Signup = (props) => {
         isLoading: !formState.isLoading,
         isValid: !formState.isValid,
       }));
-
+      formState.values.name = `${formState.values.firstName} ${formState.values.lastName}`;
       const res = await axios.post(api, formState.values);
       if (res.data.returncode === 1) {
         props.history.push('/signin');

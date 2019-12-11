@@ -294,7 +294,7 @@ const Profile = (props) => {
                     hasError('email') ? formState.errors.email[0] : null
                   }
                   onChange={handleChange}
-                  disabled="true"
+                  disabled
                   value={user.email || ''}
                 />
               </Grid>
@@ -413,7 +413,7 @@ const Profile = (props) => {
                   }
                   onChange={handleChange}
                   value={formState.values.overview || ''}
-                  multiline="true"
+                  multiline
                   rows="10"
                 />
               </Grid>
