@@ -123,7 +123,6 @@ const TutorListing = (props) => {
 
   useEffect(() => {
     fetchTutorListing();
-    handleFilterClick();
     setTotal(tutorListing.lenght);
   }, []);
 

@@ -8,7 +8,7 @@ import {
   Button,
   Container,
   CircularProgress,
-  Chip,
+  Slider,
 } from '@material-ui/core';
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 // If you want to use the provided css
@@ -95,10 +95,15 @@ const schema = {
 };
 
 const Profile = (props) => {
-   // console.log(jsonPlacesData[1])
+  // console.log(jsonPlacesData[1])
   const classes = useStyles();
   const user = JSON.parse(localStorage.getItem('user'));
   const token = JSON.parse(localStorage.getItem('token'));
+
+  function priceText(value) {
+    return `${value}$`;
+  }
+
   const [formState, setFormState] = useState({
     isValid: false,
     values: user,
@@ -119,6 +124,7 @@ const Profile = (props) => {
   const [placeSate, setPlace] = useState({
     address: formState.values.address,
   });
+  const [price, setPrice] = useState(formState.values.price);
   // eslint-disable-next-line consistent-return
   const handleEdit = async (e) => {
     try {
@@ -133,7 +139,7 @@ const Profile = (props) => {
       const { address } = placeSate;
       formState.values.urlAvatar = urlAvatar || formState.values.urlAvatar;
       formState.values.address = address || formState.values.address;
-
+      formState.values.price = price;
       const Authorization = `Bearer ${token}`;
       const res = await axios.put(api, formState.values, {
         headers: { Authorization },
@@ -352,8 +358,6 @@ const Profile = (props) => {
                       helperText={
                         hasError('address') ? formState.errors.address[0] : null
                       }
-                      // onChange={handleSelect}
-                      //  value={formState.values.address || ''}
                     />
                   )}
                 />
@@ -381,21 +385,14 @@ const Profile = (props) => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  type="number"
+
+                <Typography>Hourly Price: {price}$</Typography>
+                <Slider
                   name="price"
-                  label="$ Hourly Rate "
-                  id="price"
-                  autoComplete="price"
-                  error={hasError('price')}
-                  helperText={
-                    hasError('price') ? formState.errors.price[0] : null
-                  }
-                  onChange={handleChange}
-                  value={formState.values.price || ''}
+                  value={price || 0}
+                  onChange={(event,value) => setPrice(value)}
+                  valueLabelDisplay="auto"
+                  getAriaValueText={priceText}
                 />
               </Grid>
               <Grid item xs={12}>
