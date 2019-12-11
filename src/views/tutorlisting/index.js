@@ -47,23 +47,15 @@ const useStyles = makeStyles({
 });
 
 const TutorListing = (props) => {
-  const [rating, setRating] = useState(1);
-  const [price, setPrice] = useState([10, 50]);
-  function priceText(value) {
-    return `${value}$`;
-  }
-  const handlePriceChange = (event, newValue) => {
-    setPrice(newValue);
-  };
-  const handleRatingChange = (event, newValue) => {
-    setRating(newValue);
-  };
   const { ...rest } = props;
 
   const [tutorListing, setTutorListing] = useState([]);
   const [displayListing, setDisplayListing] = useState([]);
   const [offset, setOffset] = useState(0);
   const [total, setTotal] = useState(0);
+  const [filterListing, setFilterListing] = useState([]);
+  const [rating, setRating] = useState(1);
+  const [price, setPrice] = useState([0, 100]);
 
   const fetchTutorListing = async () => {
     try {
@@ -72,7 +64,7 @@ const TutorListing = (props) => {
 
       if (returncode === 1) {
         setTutorListing(result);
-
+        setFilterListing(result);
         const temp = result.length;
         setTotal(temp);
 
@@ -84,23 +76,31 @@ const TutorListing = (props) => {
     }
   };
 
+  const priceText = (value) => {
+    return `${value}$`;
+  };
+  const handlePriceChange = (event, newValue) => {
+    setPrice(newValue);
+  };
+  const handleRatingChange = (event, newValue) => {
+    setRating(newValue);
+  };
+
   const handleClick = (offset) => {
-    console.log(offset);
     setOffset(offset);
-    const display = _.slice(tutorListing, offset, offset + LIMITPERPAGE);
+    const display = _.slice(filterListing, offset, offset + LIMITPERPAGE);
     setDisplayListing(display);
   };
-  const handleSeeAllClick = () => {
+
+  const handleSeeAllClick = async () => {
     const temp = tutorListing.length;
     setOffset(0);
     setTotal(temp);
     const display = _.slice(tutorListing, offset, offset + LIMITPERPAGE);
     setDisplayListing(display);
   };
+
   const handleFilterClick = () => {
-    console.log('rating', rating);
-    console.log('price', price);
-    console.log('tutor', tutorListing);
     const filterTutor = [];
     tutorListing.forEach((element) => {
       if (
@@ -111,19 +111,18 @@ const TutorListing = (props) => {
         filterTutor.push(element);
       }
     });
-    console.log('fit', filterTutor);
     const temp = filterTutor.length;
-      setOffset(0);
-   console.log('fisst', temp);
-      setTotal(temp);
+    setFilterListing(filterTutor);
+    setOffset(0);
+    setTotal(temp);
 
-    const display = _.slice(filterTutor, offset, offset + LIMITPERPAGE);
+    const display = _.slice(filterTutor, 0, LIMITPERPAGE);
     setDisplayListing(display);
   };
 
   useEffect(() => {
     fetchTutorListing();
-    handleFilterClick();
+    // handleFilterClick();
     setTotal(tutorListing.lenght);
   }, []);
 
