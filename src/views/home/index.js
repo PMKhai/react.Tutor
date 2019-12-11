@@ -1,12 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { API, TOPTUTOR } from '../../config';
 import Banner from './banner';
 import TopTutor from './toptutor';
 import Introduce from './introduce';
 
+const api = `${API}${TOPTUTOR}`;
+
 const Home = (props) => {
   const { ...rest } = props;
+  const [tutorListing, setTutorListing] = useState([]);
+
+  const fecthTopTutor = async () => {
+    try {
+      const res = await axios.get(api);
+      const { topTutor, returncode } = res.data;
+
+      if (returncode === 1) {
+        setTutorListing(() => topTutor);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fecthTopTutor();
+  }, []);
 
   return (
     <div>
@@ -25,13 +47,12 @@ const Home = (props) => {
         >
           Top tutor
         </Typography>
-        <TopTutor {...rest} />
+        <TopTutor {...rest} tutor={tutorListing} />
         <div style={{ width: '100%', textAlign: 'end' }}>
           <Link
             color="inherit"
             variant="body2"
-            href="/"
-            to="/"
+            to="/tutor/all"
             style={{ flexShrink: '0', marginRight: '20px' }}
           >
             See more...

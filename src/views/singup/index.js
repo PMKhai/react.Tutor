@@ -163,7 +163,7 @@ const Signup = (props) => {
   return (
     <Container maxWidth="sm" className={classes.widthForm}>
       <div className={classes.paper}>
-      {alert.message && (
+        {alert.message && (
           <div className="alert-field">
             <Alert message={alert.message} type={alert.type} showIcon />
           </div>

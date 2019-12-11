@@ -2,8 +2,9 @@ import React from 'react';
 import { Grid } from '@material-ui/core';
 import ProfileCard from '../../../components/profilecard';
 
-const TopTutor = (props) => {
+const List = (props) => {
   const { tutor, ...rest } = props;
+
   const display = tutor
     ? tutor.map((tutor) => {
         // eslint-disable-next-line no-underscore-dangle
@@ -12,10 +13,15 @@ const TopTutor = (props) => {
           <Grid
             item
             xs={6}
-            sm={3}
+            sm={4}
             // eslint-disable-next-line no-underscore-dangle
             key={tutor._id}
-            style={{ display: 'flex', justifyContent: 'center' }}
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginTop: 15,
+              marginBottom: 15,
+            }}
           >
             <ProfileCard
               path={path}
@@ -32,11 +38,7 @@ const TopTutor = (props) => {
       })
     : null;
 
-  return (
-    <Grid container justify="space-around">
-      {display}
-    </Grid>
-  );
+  return <Grid container>{display}</Grid>;
 };
 
-export default TopTutor;
+export default List;

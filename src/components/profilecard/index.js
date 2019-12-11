@@ -13,6 +13,7 @@ import { Rating } from '@material-ui/lab';
 const useStyles = makeStyles({
   card: {
     maxWidth: 250,
+    minWidth: 250,
   },
   chip: {
     marginRight: '5px',
@@ -20,10 +21,18 @@ const useStyles = makeStyles({
 });
 const ProfileCard = (props) => {
   const classes = useStyles();
+  const { path, rating, name, price, urlAvatar, skills } = props;
 
   const handleClick = () => {
-    props.history.push('/view?id=111');
+    props.history.push(path);
   };
+
+  const displaySkills = skills
+    ? skills.map((skill) => (
+        // eslint-disable-next-line react/jsx-indent
+        <Chip label={skill} key={skill} className={classes.chip} />
+      ))
+    : null;
 
   return (
     <Card className={classes.card}>
@@ -32,20 +41,16 @@ const ProfileCard = (props) => {
           component="img"
           alt="Contemplative Reptile"
           height="200"
-          image="https://scontent.fsgn2-1.fna.fbcdn.net/v/t1.0-9/s960x960/64587413_1161079827404829_7900354979624386560_o.jpg?_nc_cat=107&_nc_ohc=7xgG5BNr6HsAQnnuVMaYrBo2v17vjHH1BrESbqmt5hprwBsZxbWvxQjIQ&_nc_ht=scontent.fsgn2-1.fna&oh=30bdeaeaaf5347da499581278c6413a0&oe=5E7BB526"
-          title="Contemplative Reptile"
+          image={urlAvatar}
+          title={name}
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
-            Lizard
-            <Typography>1 USD/h</Typography>
+            {name}
+            <Typography>{price || 0} USD/h</Typography>
           </Typography>
-          <Rating name="read-only" value={3} readOnly />
-          <div>
-            <Chip label="Toán" className={classes.chip} />
-            <Chip label="Toán" className={classes.chip} />
-            <Chip label="Tin học" className={classes.chip} />
-          </div>
+          <Rating name="read-only" value={rating || 0} readOnly />
+          <div>{displaySkills}</div>
         </CardContent>
       </CardActionArea>
     </Card>
