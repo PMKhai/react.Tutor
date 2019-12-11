@@ -23,7 +23,9 @@ import axios from 'axios';
 import { PeopleAltOutlined, Edit } from '@material-ui/icons';
 import { API, EDIT } from '../../config';
 import { storage } from '../../config/firebase';
+const jsonPlacesData = require('../../constants/dataPlaces.json');
 
+// const loadData = JSON.parse(JSON.stringify(jsonData));
 //
 //
 const listSkill = ['Math', 'Physic', 'Literature', 'Chemistry'];
@@ -93,6 +95,7 @@ const schema = {
 };
 
 const Profile = (props) => {
+   // console.log(jsonPlacesData[1])
   const classes = useStyles();
   const user = JSON.parse(localStorage.getItem('user'));
   const token = JSON.parse(localStorage.getItem('token'));
@@ -228,7 +231,6 @@ const Profile = (props) => {
 
   const hasError = (field) =>
     !!(formState.touched[field] && formState.errors[field]);
-
   return (
     <Container maxWidth="sm" className={classes.widthForm}>
       <div className={classes.paper}>
