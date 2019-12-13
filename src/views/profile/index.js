@@ -9,25 +9,30 @@ import {
   Container,
   CircularProgress,
   Slider,
+  Card,
+  CardContent,
 } from '@material-ui/core';
-import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
-// If you want to use the provided css
-import 'react-google-places-autocomplete/dist/assets/index.css';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import 'antd/dist/antd.css';
 import './style.css';
-import { Alert, Upload, message, Progress, AutoComplete } from 'antd';
+import { Alert, Upload, message, Progress } from 'antd';
 import { makeStyles } from '@material-ui/core/styles';
 import validate from 'validate.js';
 import axios from 'axios';
 import { PeopleAltOutlined, Edit } from '@material-ui/icons';
 import { API, EDIT } from '../../config';
 import { storage } from '../../config/firebase';
+
 const jsonPlacesData = require('../../constants/dataPlaces.json');
 
-// const loadData = JSON.parse(JSON.stringify(jsonData));
-//
-//
+const listProvince = Object.values(jsonPlacesData).map((value) => {
+  return value.name;
+});
+const listDistrict = Object.values(jsonPlacesData).map((value) => {
+  return Object.values(value.districts).map((value) => {
+    return value;
+  });
+});
 const listSkill = ['Math', 'Physic', 'Literature', 'Chemistry'];
 //
 const api = `${API}${EDIT}`;
@@ -95,7 +100,6 @@ const schema = {
 };
 
 const Profile = (props) => {
-  // console.log(jsonPlacesData[1])
   const classes = useStyles();
   const user = JSON.parse(localStorage.getItem('user'));
   const token = JSON.parse(localStorage.getItem('token'));
@@ -121,10 +125,22 @@ const Profile = (props) => {
     type: 'error',
     message: null,
   });
-  const [placeSate, setPlace] = useState({
-    address: formState.values.address,
-  });
+  const [address, setAddress] = useState(formState.values.address);
   const [price, setPrice] = useState(formState.values.price);
+  const [indexProvince, setIndexProvince] = useState(-1);
+  const handleProvinceChange = (event, value) => {
+    setIndexProvince(listProvince.indexOf(value));
+    setAddress({
+      province: value,
+      district: '',
+    });
+  };
+  const handleDistrictChange = (event, value) => {
+    setAddress((address) => ({
+      ...address,
+      district: value,
+    }));
+  };
   // eslint-disable-next-line consistent-return
   const handleEdit = async (e) => {
     try {
@@ -136,7 +152,6 @@ const Profile = (props) => {
         isValid: !formState.isValid,
       }));
       const { urlAvatar } = uploadState;
-      const { address } = placeSate;
       formState.values.urlAvatar = urlAvatar || formState.values.urlAvatar;
       formState.values.address = address || formState.values.address;
       formState.values.price = price;
@@ -341,26 +356,49 @@ const Profile = (props) => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <GooglePlacesAutocomplete
-                  onSelect={(value) => setPlace({ address: value.description })}
-                  initialValue={placeSate.address || ''}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="outlined"
-                      required
-                      fullWidth
-                      id="address"
-                      label="Address"
-                      name="address"
-                      autoComplete="address"
-                      error={hasError('address')}
-                      helperText={
-                        hasError('address') ? formState.errors.address[0] : null
-                      }
+                <Card className={classes.card}>
+                  <CardContent>
+                    <Typography>Address</Typography>
+                    <Typography> --- </Typography>
+                    <Autocomplete
+               //       id="combo-box-demo"
+                      options={listProvince}
+                     // getOptionLabel={(option) => option}
+                     // filterSelectedOptions
+                      onChange={handleProvinceChange}
+                      value={address.province || ''}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          required
+                          label="Province"
+                          variant="outlined"
+                          placeholder="Enter province here"
+                          fullWidth
+                        />
+                      )}
                     />
-                  )}
-                />
+                    <Typography> --- </Typography>
+                    <Autocomplete
+                  //    id="combo-box-demo"
+                      options={listDistrict[indexProvince]}
+                //      getOptionLabel={(option) => option}
+                  //    filterSelectedOptions
+                      onChange={handleDistrictChange}
+                      value={address.district || ''}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          required
+                          label="District"
+                          variant="outlined"
+                          placeholder="Enter district here"
+                          fullWidth
+                        />
+                      )}
+                    />
+                  </CardContent>
+                </Card>
               </Grid>
               <Grid item xs={12}>
                 <Autocomplete
@@ -385,12 +423,11 @@ const Profile = (props) => {
                 />
               </Grid>
               <Grid item xs={12}>
-
                 <Typography>Hourly Price: {price}$</Typography>
                 <Slider
                   name="price"
                   value={price || 0}
-                  onChange={(event,value) => setPrice(value)}
+                  onChange={(event, value) => setPrice(value)}
                   valueLabelDisplay="auto"
                   getAriaValueText={priceText}
                 />
