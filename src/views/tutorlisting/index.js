@@ -20,9 +20,13 @@ import {
 } from '@material-ui/core/styles';
 import Pagination from 'material-ui-flat-pagination';
 import _ from 'lodash';
+import AddressCard from '../../components/addressCard';
 import { API, ALLTUTOR, LIMITPERPAGE } from '../../config';
 import List from './list';
 
+const jsonPlacesData = require('../../constants/dataPlaces.json');
+
+const listProvince = Object.values(jsonPlacesData).map((value) => value.name);
 const api = `${API}${ALLTUTOR}`;
 const theme = createMuiTheme();
 
@@ -76,9 +80,7 @@ const TutorListing = (props) => {
     }
   };
 
-  const priceText = (value) => {
-    return `${value}$`;
-  };
+  const priceText = (value) => `${value}$`;
   const handlePriceChange = (event, newValue) => {
     setPrice(newValue);
   };
@@ -96,11 +98,14 @@ const TutorListing = (props) => {
     const temp = tutorListing.length;
     setOffset(0);
     setTotal(temp);
-    console.log("see all click",tutorListing)
-    const display = _.slice(tutorListing, offset,offset + LIMITPERPAGE);
+    console.log('see all click', tutorListing);
+    const display = _.slice(tutorListing, offset, offset + LIMITPERPAGE);
     setDisplayListing(display);
   };
-
+  const [address, setAddress] = useState({
+    province: '',
+    district: '',
+  });
   const handleFilterClick = () => {
     const filterTutor = [];
     tutorListing.forEach((element) => {
@@ -109,7 +114,12 @@ const TutorListing = (props) => {
         element.price >= price[0] &&
         element.price <= price[1]
       ) {
-        filterTutor.push(element);
+        if (
+          (element.address.province === address.province &&
+            element.address.district === address.district)
+        ) {
+          filterTutor.push(element);
+        }
       }
     });
     const temp = filterTutor.length;
@@ -118,7 +128,7 @@ const TutorListing = (props) => {
     setTotal(temp);
 
     const display = _.slice(filterTutor, 0, LIMITPERPAGE);
-    console.log("filter click",tutorListing)
+    console.log('filter click', tutorListing);
     setDisplayListing(display);
   };
 
@@ -131,6 +141,20 @@ const TutorListing = (props) => {
 
   const classes = useStyles();
 
+  const [indexProvince, setIndexProvince] = useState(-1);
+  const handleProvinceChange = (event, value) => {
+    setIndexProvince(listProvince.indexOf(value));
+    setAddress({
+      province: value,
+      district: '',
+    });
+  };
+  const handleDistrictChange = (event, value) => {
+    setAddress((address) => ({
+      ...address,
+      district: value,
+    }));
+  };
   return (
     <Container maxWidth="lg">
       <Grid container>
@@ -140,7 +164,7 @@ const TutorListing = (props) => {
               <Typography variant="h5" component="h2">
                 Filter
               </Typography>
-              <Typography variant="h5" component="h2"></Typography>
+              <Typography variant="h5" component="h2" />
               <Typography>Rating</Typography>
               <Rating
                 name="rating"
@@ -157,6 +181,12 @@ const TutorListing = (props) => {
                   getAriaValueText={priceText}
                 />
               </div>
+              <AddressCard
+                address={address}
+                indexProvince={indexProvince}
+                handleProvinceChange={handleProvinceChange}
+                handleDistrictChange={handleDistrictChange}
+              />
             </CardContent>
             <CardActions>
               <Button size="small" onClick={handleFilterClick}>

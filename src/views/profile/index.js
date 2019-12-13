@@ -22,19 +22,15 @@ import axios from 'axios';
 import { PeopleAltOutlined, Edit } from '@material-ui/icons';
 import { API, EDIT } from '../../config';
 import { storage } from '../../config/firebase';
+import AddressCard from '../../components/addressCard';
 
+const listSkill = ['Math', 'Physic', 'Literature', 'Chemistry'];
+//
 const jsonPlacesData = require('../../constants/dataPlaces.json');
 
 const listProvince = Object.values(jsonPlacesData).map((value) => {
   return value.name;
 });
-const listDistrict = Object.values(jsonPlacesData).map((value) => {
-  return Object.values(value.districts).map((value) => {
-    return value;
-  });
-});
-const listSkill = ['Math', 'Physic', 'Literature', 'Chemistry'];
-//
 const api = `${API}${EDIT}`;
 const beforeUpload = (file) => {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
@@ -125,8 +121,8 @@ const Profile = (props) => {
     type: 'error',
     message: null,
   });
-  const [address, setAddress] = useState(formState.values.address);
   const [price, setPrice] = useState(formState.values.price);
+  const [address, setAddress] = useState(formState.values.address);
   const [indexProvince, setIndexProvince] = useState(-1);
   const handleProvinceChange = (event, value) => {
     setIndexProvince(listProvince.indexOf(value));
@@ -358,44 +354,11 @@ const Profile = (props) => {
               <Grid item xs={12}>
                 <Card className={classes.card}>
                   <CardContent>
-                    <Typography>Address</Typography>
-                    <Typography> --- </Typography>
-                    <Autocomplete
-               //       id="combo-box-demo"
-                      options={listProvince}
-                     // getOptionLabel={(option) => option}
-                     // filterSelectedOptions
-                      onChange={handleProvinceChange}
-                      value={address.province || ''}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          required
-                          label="Province"
-                          variant="outlined"
-                          placeholder="Enter province here"
-                          fullWidth
-                        />
-                      )}
-                    />
-                    <Typography> --- </Typography>
-                    <Autocomplete
-                  //    id="combo-box-demo"
-                      options={listDistrict[indexProvince]}
-                //      getOptionLabel={(option) => option}
-                  //    filterSelectedOptions
-                      onChange={handleDistrictChange}
-                      value={address.district || ''}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          required
-                          label="District"
-                          variant="outlined"
-                          placeholder="Enter district here"
-                          fullWidth
-                        />
-                      )}
+                    <AddressCard
+                      address={address}
+                      indexProvince={indexProvince}
+                      handleProvinceChange={handleProvinceChange}
+                      handleDistrictChange={handleDistrictChange}
                     />
                   </CardContent>
                 </Card>
