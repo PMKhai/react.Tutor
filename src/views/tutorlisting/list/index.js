@@ -29,7 +29,9 @@ const List = (props) => {
               rating={tutor.rating}
               price={tutor.price}
               urlAvatar={tutor.urlAvatar}
-              skills={tutor.skills}
+              skills={Object.values(tutor.skills).map((value) => {
+                return value.name;
+              })}
               {...rest}
             />
           </Grid>

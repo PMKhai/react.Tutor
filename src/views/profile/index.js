@@ -23,14 +23,13 @@ import { PeopleAltOutlined, Edit } from '@material-ui/icons';
 import { API, EDIT } from '../../config';
 import { storage } from '../../config/firebase';
 import AddressCard from '../../components/addressCard';
+import InputSkill from '../../components/inputSkill';
 
-const listSkill = ['Math', 'Physic', 'Literature', 'Chemistry'];
+
 //
 const jsonPlacesData = require('../../constants/dataPlaces.json');
 
-const listProvince = Object.values(jsonPlacesData).map((value) => {
-  return value.name;
-});
+const listProvince = Object.values(jsonPlacesData).map((value) => value.name);
 const api = `${API}${EDIT}`;
 const beforeUpload = (file) => {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
@@ -363,28 +362,11 @@ const Profile = (props) => {
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid item xs={12}>
-                <Autocomplete
-                  multiple
-                  id="skills"
-                  name="skills"
-                  options={listSkill}
-                  filterSelectedOptions
-                  value={formState.values.skills || ''}
-                  onChange={handleChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      required
-                      variant="outlined"
-                      label="Skills"
-                      placeholder="Enter skills here"
-                      margin="normal"
-                      fullWidth
-                    />
-                  )}
-                />
-              </Grid>
+              <Grid item xs={12} />
+              <InputSkill
+                handleChange={handleChange}
+                skills={formState.values.skills}
+              />
               <Grid item xs={12}>
                 <Typography>Hourly Price: {price}$</Typography>
                 <Slider

@@ -7,4 +7,5 @@ export const EDIT = 'user/edit';
 export const TOPTUTOR = 'tutor/toptutor';
 export const ALLTUTOR = 'tutor/all';
 export const VIEWTUTOR = 'tutor/view';
+export const ALLSKILL = 'skill/all';
 export const LIMITPERPAGE = 2;
