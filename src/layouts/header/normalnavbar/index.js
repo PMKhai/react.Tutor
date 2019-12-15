@@ -74,23 +74,63 @@ const useStyles = makeStyles((theme) => ({
 const NormalNavbar = (props) => {
   const classes = useStyles();
   const [profileUser, setProfileUser] = useState(null);
-  const menu = (profileUser) => (
-    <Menu>
-      <Menu.Item>
-        <h3>Hi, {profileUser.name}</h3>
-      </Menu.Item>
-      <Menu.Divider />
-      <Menu.Item>
-        <Link to="/profile">Profile</Link>
-      </Menu.Item>
-      <Menu.Item>
-        <LinkHref onClick={() => {localStorage.clear()}} href="/signin" underline="none">Logout</LinkHref>
-      </Menu.Item>
-    </Menu>
-  );
+  // eslint-disable-next-line no-confusing-arrow
+  const menu = (profileUser) =>
+    profileUser.isTutor ? (
+      <Menu>
+        <Menu.Item>
+          <h3>Hi, {profileUser.name}</h3>
+        </Menu.Item>
+        <Menu.Divider />
+        <Menu.Item>
+          <Link to="/profile">Profile</Link>
+        </Menu.Item>
+        <Menu.Item>
+          <Link to="/profile">Registration required</Link>
+        </Menu.Item>
+        <Menu.Item>
+          <Link to="/profile">Revenue</Link>
+        </Menu.Item>
+        <Menu.Item>
+          <LinkHref
+            onClick={() => {
+              localStorage.clear();
+            }}
+            href="/signin"
+            underline="none"
+          >
+            Logout
+          </LinkHref>
+        </Menu.Item>
+      </Menu>
+    ) : (
+      <Menu>
+        <Menu.Item>
+          <h3>Hi, {profileUser.name}</h3>
+        </Menu.Item>
+        <Menu.Divider />
+        <Menu.Item>
+          <Link to="/profile">Profile</Link>
+        </Menu.Item>
+        <Menu.Item>
+          <Link to="/profile">Contract</Link>
+        </Menu.Item>
+        <Menu.Item>
+          <LinkHref
+            onClick={() => {
+              localStorage.clear();
+            }}
+            href="/signin"
+            underline="none"
+          >
+            Logout
+          </LinkHref>
+        </Menu.Item>
+      </Menu>
+    );
   const fetchApiUserInfo = async () => {
     const token = JSON.parse(localStorage.getItem('token'));
-    console.log("asdasdsad");
+    console.log('asdasdsad');
     if (token) {
       try {
         const Authorization = `Bearer ${token}`;
@@ -98,7 +138,7 @@ const NormalNavbar = (props) => {
           headers: { Authorization },
         });
         if (res.data.returncode === 1) {
-          setProfileUser(res.data.user); 
+          setProfileUser(res.data.user);
           localStorage.setItem('user', JSON.stringify(res.data.user));
         }
       } catch (e) {
@@ -153,7 +193,9 @@ const NormalNavbar = (props) => {
       )}
       {!profileUser && (
         <Button variant="outlined" color="secondary" size="small">
-          <Link to="/signup" color="secondary">Sign up</Link>
+          <Link to="/signup" color="secondary">
+            Sign up
+          </Link>
         </Button>
       )}
     </Toolbar>
