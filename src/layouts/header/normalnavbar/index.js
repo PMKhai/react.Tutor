@@ -86,10 +86,10 @@ const NormalNavbar = (props) => {
           <Link to="/profile">Profile</Link>
         </Menu.Item>
         <Menu.Item>
-          <Link to="/profile">Registration required</Link>
+          <Link to="/registration">Registration required</Link>
         </Menu.Item>
         <Menu.Item>
-          <Link to="/profile">Revenue</Link>
+          <Link to="/Revenue">Revenue</Link>
         </Menu.Item>
         <Menu.Item>
           <LinkHref
@@ -113,7 +113,7 @@ const NormalNavbar = (props) => {
           <Link to="/profile">Profile</Link>
         </Menu.Item>
         <Menu.Item>
-          <Link to="/profile">Contract</Link>
+          <Link to="/contract">Contract</Link>
         </Menu.Item>
         <Menu.Item>
           <LinkHref
