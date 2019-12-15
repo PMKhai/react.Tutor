@@ -49,11 +49,11 @@ const ShowProfile = (props) => {
 
   const { skills } = profile;
   const displaySkills = skills
-    ? skills.map((skill) => (
-        // eslint-disable-next-line react/jsx-indent
-        <Chip label={skill} key={skill} className={classes.chip} />
-      ))
-    : null;
+  ? Object.values(skills).map((value) => (
+      // eslint-disable-next-line react/jsx-indent
+      <Chip label={value.name} key={value.name} className={classes.chip} />
+    ))
+  : null;
 
   useEffect(() => {
     fecthTutorInfo();

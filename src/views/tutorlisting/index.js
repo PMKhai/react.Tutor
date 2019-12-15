@@ -20,6 +20,7 @@ import {
 } from '@material-ui/core/styles';
 import Pagination from 'material-ui-flat-pagination';
 import _ from 'lodash';
+import InputSkill from '../../components/inputSkill'
 import AddressCard from '../../components/addressCard';
 import { API, ALLTUTOR, LIMITPERPAGE } from '../../config';
 import List from './list';
@@ -98,7 +99,6 @@ const TutorListing = (props) => {
     const temp = tutorListing.length;
     setOffset(0);
     setTotal(temp);
-    console.log('see all click', tutorListing);
     const display = _.slice(tutorListing, offset, offset + LIMITPERPAGE);
     setDisplayListing(display);
   };
@@ -115,8 +115,8 @@ const TutorListing = (props) => {
         element.price <= price[1]
       ) {
         if (
-          (element.address.province === address.province &&
-            element.address.district === address.district)
+          element.address.province === address.province &&
+          element.address.district === address.district
         ) {
           filterTutor.push(element);
         }
@@ -128,7 +128,7 @@ const TutorListing = (props) => {
     setTotal(temp);
 
     const display = _.slice(filterTutor, 0, LIMITPERPAGE);
-    console.log('filter click', tutorListing);
+    console.log('filter click', listSkill);
     setDisplayListing(display);
   };
 
@@ -142,6 +142,7 @@ const TutorListing = (props) => {
   const classes = useStyles();
 
   const [indexProvince, setIndexProvince] = useState(-1);
+  const [listSkill, setListSkill] = useState([]);
   const handleProvinceChange = (event, value) => {
     setIndexProvince(listProvince.indexOf(value));
     setAddress({
@@ -154,6 +155,9 @@ const TutorListing = (props) => {
       ...address,
       district: value,
     }));
+  };
+  const handleListSkillChange = (event, value) => {
+    setListSkill(value);
   };
   return (
     <Container maxWidth="lg">
@@ -186,6 +190,10 @@ const TutorListing = (props) => {
                 indexProvince={indexProvince}
                 handleProvinceChange={handleProvinceChange}
                 handleDistrictChange={handleDistrictChange}
+              />
+              <InputSkill
+                handleChange={handleListSkillChange}
+                skills={listSkill}
               />
             </CardContent>
             <CardActions>

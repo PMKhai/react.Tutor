@@ -25,7 +25,6 @@ import { storage } from '../../config/firebase';
 import AddressCard from '../../components/addressCard';
 import InputSkill from '../../components/inputSkill';
 
-
 //
 const jsonPlacesData = require('../../constants/dataPlaces.json');
 
@@ -297,58 +296,64 @@ const Profile = (props) => {
                 )}
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  error={hasError('email')}
-                  helperText={
-                    hasError('email') ? formState.errors.email[0] : null
-                  }
-                  onChange={handleChange}
-                  disabled
-                  value={user.email || ''}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  autoComplete="name"
-                  name="name"
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="name"
-                  label="Name"
-                  autoFocus
-                  error={hasError('name')}
-                  helperText={
-                    hasError('name') ? formState.errors.Name[0] : null
-                  }
-                  onChange={handleChange}
-                  value={formState.values.name || ''}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  type="number"
-                  id="p_number"
-                  label="Phone Number"
-                  name="p_number"
-                  autoComplete="p_number"
-                  error={hasError('p_number')}
-                  helperText={
-                    hasError('p_number') ? formState.errors.p_number[0] : null
-                  }
-                  onChange={handleChange}
-                  value={formState.values.p_number || ''}
-                />
+                <Card className={classes.card}>
+                  <CardContent>
+                    <Typography>Common Information</Typography>
+                    <Typography>---</Typography>
+                    <TextField
+                      variant="outlined"
+                      required
+                      fullWidth
+                      id="email"
+                      label="Email Address"
+                      name="email"
+                      autoComplete="email"
+                      error={hasError('email')}
+                      helperText={
+                        hasError('email') ? formState.errors.email[0] : null
+                      }
+                      onChange={handleChange}
+                      disabled
+                      value={user.email || ''}
+                    />
+                    <Typography>---</Typography>
+                    <TextField
+                      autoComplete="name"
+                      name="name"
+                      variant="outlined"
+                      required
+                      fullWidth
+                      id="name"
+                      label="Name"
+                      autoFocus
+                      error={hasError('name')}
+                      helperText={
+                        hasError('name') ? formState.errors.Name[0] : null
+                      }
+                      onChange={handleChange}
+                      value={formState.values.name || ''}
+                    />
+                    <Typography>---</Typography>
+                    <TextField
+                      variant="outlined"
+                      required
+                      fullWidth
+                      type="number"
+                      id="p_number"
+                      label="Phone Number"
+                      name="p_number"
+                      autoComplete="p_number"
+                      error={hasError('p_number')}
+                      helperText={
+                        hasError('p_number')
+                          ? formState.errors.p_number[0]
+                          : null
+                      }
+                      onChange={handleChange}
+                      value={formState.values.p_number || ''}
+                    />
+                  </CardContent>
+                </Card>
               </Grid>
               <Grid item xs={12}>
                 <Card className={classes.card}>
@@ -362,39 +367,57 @@ const Profile = (props) => {
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid item xs={12} />
-              <InputSkill
-                handleChange={handleChange}
-                skills={formState.values.skills}
-              />
               <Grid item xs={12}>
-                <Typography>Hourly Price: {price}$</Typography>
-                <Slider
-                  name="price"
-                  value={price || 0}
-                  onChange={(event, value) => setPrice(value)}
-                  valueLabelDisplay="auto"
-                  getAriaValueText={priceText}
-                />
+                <Card className={classes.card}>
+                  <CardContent>
+                    <InputSkill
+                      handleChange={handleChange}
+                      skills={formState.values.skills}
+                    />
+                  </CardContent>
+                </Card>
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  name="overview"
-                  label="Overview"
-                  id="overview"
-                  autoComplete="overview"
-                  error={hasError('overview')}
-                  helperText={
-                    hasError('overview') ? formState.errors.overview[0] : null
-                  }
-                  onChange={handleChange}
-                  value={formState.values.overview || ''}
-                  multiline
-                  rows="10"
-                />
+                <Card className={classes.card}>
+                  <CardContent>
+                    <Typography>Hourly Price: {price}$</Typography>
+                    <Slider
+                      name="price"
+                      value={price || 0}
+                      onChange={(event, value) => setPrice(value)}
+                      valueLabelDisplay="auto"
+                      getAriaValueText={priceText}
+                    />
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12}>
+                <Card className={classes.card}>
+                  <CardContent>
+                    <Typography>Overview</Typography>
+                    <Typography>---</Typography>
+                    <TextField
+                      variant="outlined"
+                      required
+                      fullWidth
+                      name="overview"
+                      // label="Overview"
+                      placeholder="Tell something about you !!!"
+                      id="overview"
+                      autoComplete="overview"
+                      error={hasError('overview')}
+                      helperText={
+                        hasError('overview')
+                          ? formState.errors.overview[0]
+                          : null
+                      }
+                      onChange={handleChange}
+                      value={formState.values.overview || ''}
+                      multiline
+                      rows="10"
+                    />
+                  </CardContent>
+                </Card>
               </Grid>
             </Grid>
             <Button

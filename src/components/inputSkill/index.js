@@ -18,7 +18,17 @@ const InputSkill = (props) => {
       const { returncode, result, returnMessage } = await res.data;
 
       if (returncode === 1) {
-        setListSkill(result);
+        if (skills.length > 0) {
+          //  const listSkillName = [];
+          const listSkillName = skills.map((element) => element.name);
+          //    skills.map(element )
+          const list = result.filter((e) => !listSkillName.includes(e.name));
+          // console.log('skill', skills);
+          // console.log("d",result)
+          setListSkill(list);
+        } else {
+          setListSkill(result);
+        }
       } else console.log(returnMessage);
     } catch (err) {
       console.log(err);
@@ -29,23 +39,22 @@ const InputSkill = (props) => {
   }, []);
   return (
     <div>
+      <Typography>Major Skills</Typography>
+      <Typography> --- </Typography>
       <Autocomplete
+        filterSelectedOptions
         multiple
-        id="skills"
-        name="skills"
         options={listSkill}
         getOptionLabel={(option) => option.name}
-        filterSelectedOptions
-        value={skills}
+        defaultValue={skills}
         onChange={handleChange}
         renderInput={(params) => (
           <TextField
             {...params}
             required
             variant="outlined"
-            label="Skills"
+            // label="Skills"
             placeholder="Enter skills here"
-            margin="normal"
             fullWidth
           />
         )}
