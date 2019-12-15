@@ -25,6 +25,7 @@
     "react/jsx-wrap-multilines": "off",
     "implicit-arrow-linebreak": "off",
     "no-shadow": "off",
-    "indent": "off"
+    "indent": "off",
+    "comma-dangle": "off"
   }
 }

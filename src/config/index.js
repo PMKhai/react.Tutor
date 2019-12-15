@@ -8,4 +8,5 @@ export const TOPTUTOR = 'tutor/toptutor';
 export const ALLTUTOR = 'tutor/all';
 export const VIEWTUTOR = 'tutor/view';
 export const ALLSKILL = 'skill/all';
+export const ALLREGISTRATION = 'tutor/registration';
 export const LIMITPERPAGE = 2;
