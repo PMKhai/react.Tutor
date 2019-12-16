@@ -9,6 +9,7 @@ import Profile from './views/profile';
 import ShowProfile from './views/showprofile';
 import TutorListing from './views/tutorlisting';
 import RegistrationRequest from './views/registrationrequest';
+import Revenue from './views/revenue';
 
 const Routes = () => (
   <Switch>
@@ -53,6 +54,12 @@ const Routes = () => (
       exact
       layout={NormalLayout}
       path="/registration"
+    />
+    <RouteWithLayout
+      component={Revenue}
+      exact
+      layout={NormalLayout}
+      path="/revenue"
     />
     <Redirect exact from="/" to="home" />
   </Switch>

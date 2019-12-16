@@ -9,7 +9,7 @@ import {
   InputBase,
 } from '@material-ui/core';
 // import { Link } from 'react-router-dom';
-import { Menu, Dropdown, Icon, Avatar } from 'antd';
+import { Menu, Dropdown, Avatar } from 'antd';
 import { Search } from '@material-ui/icons';
 import { makeStyles, fade } from '@material-ui/core/styles';
 import axios from 'axios';
@@ -69,9 +69,12 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
+  logo: {
+    width: '50%',
+  },
 }));
 
-const NormalNavbar = (props) => {
+const NormalNavbar = () => {
   const classes = useStyles();
   const [profileUser, setProfileUser] = useState(null);
   // eslint-disable-next-line no-confusing-arrow
@@ -89,11 +92,12 @@ const NormalNavbar = (props) => {
           <Link to="/registration">Registration required</Link>
         </Menu.Item>
         <Menu.Item>
-          <Link to="/Revenue">Revenue</Link>
+          <Link to="/revenue">Revenue</Link>
         </Menu.Item>
         <Menu.Item>
           <LinkHref
             onClick={() => {
+              // eslint-disable-next-line no-undef
               localStorage.clear();
             }}
             href="/signin"
@@ -129,8 +133,8 @@ const NormalNavbar = (props) => {
       </Menu>
     );
   const fetchApiUserInfo = async () => {
+    // eslint-disable-next-line no-undef
     const token = JSON.parse(localStorage.getItem('token'));
-    console.log('asdasdsad');
     if (token) {
       try {
         const Authorization = `Bearer ${token}`;
@@ -139,6 +143,7 @@ const NormalNavbar = (props) => {
         });
         if (res.data.returncode === 1) {
           setProfileUser(res.data.user);
+          // eslint-disable-next-line no-undef
           localStorage.setItem('user', JSON.stringify(res.data.user));
         }
       } catch (e) {
@@ -160,7 +165,7 @@ const NormalNavbar = (props) => {
         noWrap
         className={classes.toolbarTitle}
       >
-        Logo...
+        <Link to="/">Logo...</Link>
       </Typography>
       <div className={classes.search}>
         <InputBase
@@ -172,7 +177,7 @@ const NormalNavbar = (props) => {
           inputProps={{ 'aria-label': 'search' }}
         />
       </div>
-      <IconButton>
+      <IconButton className={classes.customButton}>
         <Search />
       </IconButton>
       {profileUser && (
