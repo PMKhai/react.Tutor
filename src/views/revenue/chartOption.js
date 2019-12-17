@@ -56,16 +56,16 @@ export const options = {
 };
 
 export const labels = [
-  '1 Aug',
-  '2 Aug',
-  '3 Aug',
-  '4 Aug',
-  '5 Aug',
-  '6 Aug',
-  '7 Aug',
-  '8 Aug',
-  '9 Aug',
-  '10 Aug',
-  '11 Aug',
-  '12 Aug',
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'June',
+  'July',
+  'Aug',
+  'Sept',
+  'Oct',
+  'Nov',
+  'Dec',
 ];
