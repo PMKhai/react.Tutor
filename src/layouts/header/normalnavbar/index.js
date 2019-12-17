@@ -89,6 +89,9 @@ const NormalNavbar = () => {
           <Link to="/profile">Profile</Link>
         </Menu.Item>
         <Menu.Item>
+          <Link to="/changepassword">Change password</Link>
+        </Menu.Item>
+        <Menu.Item>
           <Link to="/registration">Registration required</Link>
         </Menu.Item>
         <Menu.Item>
@@ -115,6 +118,9 @@ const NormalNavbar = () => {
         <Menu.Divider />
         <Menu.Item>
           <Link to="/profile">Profile</Link>
+        </Menu.Item>
+        <Menu.Item>
+          <Link to="/changepassword">Change password</Link>
         </Menu.Item>
         <Menu.Item>
           <Link to="/contract">Contract</Link>

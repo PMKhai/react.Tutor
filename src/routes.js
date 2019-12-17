@@ -10,6 +10,8 @@ import ShowProfile from './views/showprofile';
 import TutorListing from './views/tutorlisting';
 import RegistrationRequest from './views/registrationrequest';
 import Revenue from './views/revenue';
+import ChangePassword from './components/changePassword';
+import ResetPassword from './components/sendMailRecover';
 
 const Routes = () => (
   <Switch>
@@ -60,6 +62,18 @@ const Routes = () => (
       exact
       layout={NormalLayout}
       path="/revenue"
+    />
+    <RouteWithLayout
+      component={ChangePassword}
+      exact
+      layout={NormalLayout}
+      path="/changepassword"
+    />
+    <RouteWithLayout
+      component={ResetPassword}
+      exact
+      layout={NormalLayout}
+      path="/resetpassword"
     />
     <Redirect exact from="/" to="home" />
   </Switch>

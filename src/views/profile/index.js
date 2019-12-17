@@ -298,7 +298,7 @@ const Profile = (props) => {
               <Grid item xs={12}>
                 <Card className={classes.card}>
                   <CardContent>
-                    <Typography>Common Information</Typography>
+                    <Typography>General Information</Typography>
                     <Typography>---</Typography>
                     <TextField
                       variant="outlined"
@@ -436,6 +436,13 @@ const Profile = (props) => {
               )}
               Update
             </Button>
+            <Grid container justify="flex-end">
+              <Grid item>
+                <Link to="/home" variant="body2">
+                  Cancel
+                </Link>
+              </Grid>
+            </Grid>
           </form>
         )}
       </div>

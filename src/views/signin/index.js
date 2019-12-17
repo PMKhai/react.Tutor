@@ -279,7 +279,7 @@ export default function SignIn(props) {
           </Grid>
           <Grid container>
             <Grid item xs>
-              <Link to="/forgotpassword" variant="body2">
+              <Link to="/resetpassword" variant="body2">
                 Forgot password?
               </Link>
             </Grid>
