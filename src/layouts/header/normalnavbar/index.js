@@ -92,6 +92,9 @@ const NormalNavbar = () => {
           <Link to="/changepassword">Change password</Link>
         </Menu.Item>
         <Menu.Item>
+          <Link to="/message">Message</Link>
+        </Menu.Item>
+        <Menu.Item>
           <Link to="/registration">Registration required</Link>
         </Menu.Item>
         <Menu.Item>
@@ -123,11 +126,15 @@ const NormalNavbar = () => {
           <Link to="/changepassword">Change password</Link>
         </Menu.Item>
         <Menu.Item>
+          <Link to="/message">Message</Link>
+        </Menu.Item>
+        <Menu.Item>
           <Link to="/contract">Contract</Link>
         </Menu.Item>
         <Menu.Item>
           <LinkHref
             onClick={() => {
+              // eslint-disable-next-line no-undef
               localStorage.clear();
             }}
             href="/signin"

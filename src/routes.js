@@ -12,6 +12,7 @@ import RegistrationRequest from './views/registrationrequest';
 import Revenue from './views/revenue';
 import ChangePassword from './components/changePassword';
 import ResetPassword from './components/sendMailRecover';
+import Message from './views/message';
 
 const Routes = () => (
   <Switch>
@@ -74,6 +75,12 @@ const Routes = () => (
       exact
       layout={NormalLayout}
       path="/resetpassword"
+    />
+    <RouteWithLayout
+      component={Message}
+      exact
+      layout={NormalLayout}
+      path="/message"
     />
     <Redirect exact from="/" to="home" />
   </Switch>

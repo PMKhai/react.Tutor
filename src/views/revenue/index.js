@@ -30,7 +30,7 @@ const calculate = (revenue, year) => {
     let temp = 0;
     reveneuByYear.forEach((element) => {
       if (moment(element.dayOfPayment).month() === i) {
-        temp += element.payment;
+        temp += element.payment * 0.7;
       }
     });
     result[i] = temp;
