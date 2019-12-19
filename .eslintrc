@@ -27,6 +27,7 @@
     "no-shadow": "off",
     "indent": "off",
     "comma-dangle": "off",
-    "arrow-body-style": "off"
+    "arrow-body-style": "off",
+    "react/no-array-index-key": "off"
   }
 }
