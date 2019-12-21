@@ -13,9 +13,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import ScrollBar from 'react-perfect-scrollbar';
 import 'react-perfect-scrollbar/dist/css/styles.css';
-import { API, ALLMESSAGES } from '../../config';
+import { API, ALLMESSAGES, SENDMESSAGE } from '../../config';
+import socket from '../../config/socket';
 
 const api = `${API}${ALLMESSAGES}`;
+const apiSendMessage = `${API}${SENDMESSAGE}`;
 
 const useStyles = makeStyles({
   card: {
@@ -65,6 +67,7 @@ const useStyles = makeStyles({
   },
   divider: {
     borderRightStyle: 'groove',
+    borderWidth: 'thin',
   },
 });
 
@@ -76,9 +79,18 @@ const Message = () => {
   const [isMe, setIsMe] = useState('');
   const [contactList, setContactList] = useState([]);
   const [displayMessage, setDisplayMessage] = useState({});
+  const [message, setMessage] = useState('');
 
   // eslint-disable-next-line no-undef
   const token = JSON.parse(localStorage.getItem('token'));
+
+  const joinRoom = (room) => {
+    socket.emit('subscribe', room);
+  };
+
+  const leaveRoom = (room) => {
+    socket.emit('unsubscribe', room);
+  };
 
   const fetchMessages = async () => {
     try {
@@ -96,6 +108,8 @@ const Message = () => {
         setContactList(contactList);
         setIsMe(email);
         setDisplayMessage(contactList[0]);
+        // eslint-disable-next-line no-underscore-dangle
+        joinRoom(contactList[0]._id);
       }
     } catch (error) {
       console.log(error);
@@ -104,13 +118,56 @@ const Message = () => {
 
   useEffect(() => {
     fetchMessages();
+    socket.on('message', (data) => {
+      // eslint-disable-next-line no-console
+      console.log(data);
+      // const { email, message } = data;
+      // const temp = { ...displayMessage };
+      // console.log(typeof temp);
+      // if (temp !== {}) {
+      //   temp.messages.push({ owner: email, message });
+      //   setDisplayMessage(temp);
+      // }
+    });
   }, []);
 
-  const handleClick = (index, email) => {
+  const handleClick = (index) => {
     const temp = Array(contactList.length).fill(false);
     temp[index] = true;
     setIsActive(temp);
     setDisplayMessage(contactList[index]);
+    // eslint-disable-next-line no-underscore-dangle
+    leaveRoom(displayMessage._id);
+    // eslint-disable-next-line no-underscore-dangle
+    joinRoom(contactList[index]._id);
+    setMessage('');
+  };
+
+  const sendMesage = async (message) => {
+    try {
+      const Authorization = `Bearer ${token}`;
+
+      const res = await axios.put(
+        apiSendMessage,
+        // eslint-disable-next-line no-underscore-dangle
+        { id: displayMessage._id, message },
+        {
+          headers: { Authorization },
+        }
+      );
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    if (message !== '') sendMesage(message);
+  };
+
+  const handleOnChangeInput = (e) => {
+    setMessage(e.target.value);
   };
 
   return (
@@ -148,15 +205,6 @@ const Message = () => {
           <Grid item sm={8}>
             <ScrollBar component="div" className={classes.displayMessage}>
               <div className={classes.displayMessage}>
-                {/* <div className={classes.rightChip}>
-                  <Chip
-                    label="Khải đẹp chai quá đi Khải đẹp chai quá đi Khải đẹp chai quá đi "
-                    color="primary"
-                  />
-                </div>
-                <div className={classes.leftChip}>
-                  <Chip label="sss" />
-                </div> */}
                 {!!displayMessage.messages &&
                   displayMessage.messages.map((item, index) => {
                     return item.owner === isMe ? (
@@ -177,8 +225,14 @@ const Message = () => {
                   inputProps={{ 'aria-label': 'naked' }}
                   placeholder="Type a message..."
                   className={classes.inputForm}
+                  value={message}
+                  onChange={handleOnChangeInput}
                 />
-                <Button type="submit" className={classes.buttonForm}>
+                <Button
+                  type="submit"
+                  className={classes.buttonForm}
+                  onClick={handleSendMessage}
+                >
                   <Send color="primary" />
                 </Button>
               </form>
