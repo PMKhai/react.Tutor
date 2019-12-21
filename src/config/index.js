@@ -13,4 +13,5 @@ export const VIEWTUTOR = 'tutor/view';
 export const ALLSKILL = 'skill/all';
 export const ALLREGISTRATION = 'tutor/registration';
 export const ALLREVENUE = 'tutor/revenue';
+export const ALLMESSAGES = 'user/messages';
 export const LIMITPERPAGE = 2;
