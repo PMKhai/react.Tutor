@@ -7,10 +7,16 @@ import { API, ALLSKILL } from '../../config';
 
 const useStyles = makeStyles({});
 const api = `${API}${ALLSKILL}`;
-// const listSkill = ['Math', 'Physic', 'Literature', 'Chemistry'];
+
+const schema = {
+  skills: {
+    presence: { allowEmpty: false, message: 'is required' },
+  },
+};
+
 const InputSkill = (props) => {
   const classes = useStyles();
-  const { skills, handleChange } = props;
+  const { skills, handleChange, error, helperText } = props;
   const [listSkill, setListSkill] = useState([]);
   const fetchListSkill = async () => {
     try {
@@ -53,9 +59,10 @@ const InputSkill = (props) => {
             {...params}
             required
             variant="outlined"
-            // label="Skills"
             placeholder="Enter skills here"
             fullWidth
+            error={error}
+            helperText={helperText}
           />
         )}
       />

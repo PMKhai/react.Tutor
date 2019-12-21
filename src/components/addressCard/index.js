@@ -21,6 +21,10 @@ const AddressCard = (props) => {
     indexProvince,
     handleDistrictChange,
     handleProvinceChange,
+    errorPro,
+    helperTextPro,
+    errorDis,
+    helperTextDis,
   } = props;
 
   return (
@@ -42,6 +46,8 @@ const AddressCard = (props) => {
             variant="outlined"
             placeholder="Enter province here"
             fullWidth
+            error={errorPro}
+            helperText={helperTextPro}
           />
         )}
       />
@@ -61,6 +67,8 @@ const AddressCard = (props) => {
             variant="outlined"
             placeholder="Enter district here"
             fullWidth
+            error={errorDis}
+            helperText={helperTextDis}
           />
         )}
       />

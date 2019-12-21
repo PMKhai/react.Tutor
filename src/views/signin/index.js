@@ -13,6 +13,7 @@ import {
   Container,
   CircularProgress,
 } from '@material-ui/core';
+import validate from 'validate.js';
 import FacebookLogin from 'react-facebook-login';
 import GoogleLogin from 'react-google-login';
 import { makeStyles } from '@material-ui/core/styles';
@@ -50,6 +51,18 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0, 0, 0),
   },
 }));
+const schema = {
+  email: {
+    // presence: { allowEmpty: false, message: 'is required' },
+    email: true,
+    length: {
+      maximum: 64,
+    },
+  },
+  password: {
+    // presence: { allowEmpty: false, message: 'is required' },
+  },
+};
 
 export default function SignIn(props) {
   const classes = useStyles();
@@ -140,7 +153,6 @@ export default function SignIn(props) {
         isLoading: !formState.isLoading,
         isValid: !formState.isValid,
       }));
-      console.log('fb--', response);
 
       const { email, name, picture } = response;
 
@@ -197,6 +209,18 @@ export default function SignIn(props) {
       }
     }
   };
+  useEffect(() => {
+    const errors = validate(formState.values, schema);
+    console.log(errors);
+    setFormState((formState) => ({
+      ...formState,
+      isValid: !errors,
+      errors: errors || {},
+    }));
+  }, [formState.values]);
+
+  const hasError = (field) =>
+    !!(formState.touched[field] && formState.errors[field]);
   return (
     <Container maxWidth="sm" className={classes.widthForm}>
       <div className={classes.paper}>
@@ -212,34 +236,50 @@ export default function SignIn(props) {
           Sign in
         </Typography>
         <form className={classes.form} noValidate>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-            onChange={handleChange}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            onChange={handleChange}
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                error={hasError('email')}
+                helperText={
+                  hasError('email') ? formState.errors.email[0] : null
+                }
+                onChange={handleChange}
+                value={formState.values.email || ''}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                error={hasError('password')}
+                helperText={
+                  hasError('password') ? formState.errors.password[0] : null
+                }
+                onChange={handleChange}
+                value={formState.values.password || ''}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={<Checkbox value="remember" color="primary" />}
+                label="Remember me"
+              />
+            </Grid>
+          </Grid>
+
           <Button
             fullWidth
             variant="contained"
@@ -248,7 +288,7 @@ export default function SignIn(props) {
             onClick={(e) => {
               handleSignIn(e);
             }}
-            disabled={formState.isValid}
+            disabled={!formState.isValid}
           >
             {formState.isLoading && (
               <CircularProgress size={20} style={{ marginRight: '5px' }} />

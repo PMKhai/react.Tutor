@@ -65,30 +65,32 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const schema = {
-  firstName: {
+  name: {
     presence: { allowEmpty: false, message: 'is required' },
     length: {
       maximum: 32,
     },
   },
-  lastName: {
+  p_number: {
     presence: { allowEmpty: false, message: 'is required' },
     length: {
-      maximum: 32,
+      maximum: 20,
     },
   },
-  email: {
+  // province: {
+  //   presence: { allowEmpty: false, message: 'is required' },
+  // },
+  // district: {
+  //   presence: { allowEmpty: false, message: 'is required' },
+  // },
+  skills: {
     presence: { allowEmpty: false, message: 'is required' },
-    email: true,
-    length: {
-      maximum: 64,
-    },
   },
-  password: {
+  overview: {
     presence: { allowEmpty: false, message: 'is required' },
     length: {
-      minimum: 6,
-      maximum: 128,
+      minimum: 30,
+      maximum: 300,
     },
   },
 };
@@ -123,6 +125,7 @@ const Profile = (props) => {
   const [address, setAddress] = useState(formState.values.address);
   const [indexProvince, setIndexProvince] = useState(-1);
   const handleProvinceChange = (event, value) => {
+    console.log("event",event)
     setIndexProvince(listProvince.indexOf(value));
     setAddress({
       province: value,
@@ -182,13 +185,11 @@ const Profile = (props) => {
   };
   const handleUploadChange = (info) => {
     if (info.file.status === 'uploading') {
-      // setUploadState((uploadState) => ({ ...uploadState, uploading: true }));
       setUploadState({ uploading: true });
       return;
     }
     if (info.file.status === 'done') {
       const image = info.file.originFileObj;
-      console.log('yeahhhh', image.name);
       const uploadTask = storage.ref(`images/${image.name}`).put(image);
       uploadTask.on(
         'state_changed',
@@ -210,7 +211,6 @@ const Profile = (props) => {
             .child(image.name)
             .getDownloadURL()
             .then((urlAvatar) => {
-              console.log('urlAvatar', urlAvatar);
               setUploadState({ urlAvatar });
             });
         }
@@ -218,7 +218,9 @@ const Profile = (props) => {
     }
   };
   const handleChange = (event, value) => {
-    event.persist();
+    if (event.type === 'change') {
+      event.persist();
+    }
     setFormState({
       ...formState,
       values: {
@@ -231,12 +233,10 @@ const Profile = (props) => {
         [event.target.name]: true,
       },
     });
-    console.log('ad', formState.values);
   };
 
   useEffect(() => {
     const errors = validate(formState.values, schema);
-
     setFormState((formState) => ({
       ...formState,
       isValid: !errors,
@@ -245,7 +245,7 @@ const Profile = (props) => {
   }, [formState.values]);
 
   const hasError = (field) =>
-    !!(formState.touched[field] && formState.errors[field]);
+    !!(formState.errors[field]);
   return (
     <Container maxWidth="sm" className={classes.widthForm}>
       <div className={classes.paper}>
@@ -308,10 +308,6 @@ const Profile = (props) => {
                       label="Email Address"
                       name="email"
                       autoComplete="email"
-                      error={hasError('email')}
-                      helperText={
-                        hasError('email') ? formState.errors.email[0] : null
-                      }
                       onChange={handleChange}
                       disabled
                       value={user.email || ''}
@@ -328,7 +324,7 @@ const Profile = (props) => {
                       autoFocus
                       error={hasError('name')}
                       helperText={
-                        hasError('name') ? formState.errors.Name[0] : null
+                        hasError('name') ? formState.errors.name[0] : null
                       }
                       onChange={handleChange}
                       value={formState.values.name || ''}
@@ -363,6 +359,12 @@ const Profile = (props) => {
                       indexProvince={indexProvince}
                       handleProvinceChange={handleProvinceChange}
                       handleDistrictChange={handleDistrictChange}
+                      errorPro={hasError('province')}
+                      helperTextPro={
+                        hasError('province')
+                          ? formState.errors.province[0]
+                          : null
+                      }
                     />
                   </CardContent>
                 </Card>
@@ -373,6 +375,10 @@ const Profile = (props) => {
                     <InputSkill
                       handleChange={handleChange}
                       skills={formState.values.skills}
+                      error={hasError('skills')}
+                      helperText={
+                        hasError('skills') ? formState.errors.skills : null
+                      }
                     />
                   </CardContent>
                 </Card>
@@ -429,7 +435,7 @@ const Profile = (props) => {
               onClick={(e) => {
                 handleEdit(e);
               }}
-              disabled={formState.isValid}
+              disabled={!formState.isValid}
             >
               {formState.isLoading && (
                 <CircularProgress size={20} style={{ marginRight: '5px' }} />
