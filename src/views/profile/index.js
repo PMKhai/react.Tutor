@@ -379,6 +379,7 @@ const Profile = (props) => {
                       helperText={
                         hasError('skills') ? formState.errors.skills : null
                       }
+                      multiple
                     />
                   </CardContent>
                 </Card>
