@@ -61,6 +61,8 @@ const TutorListing = (props) => {
   const [filterListing, setFilterListing] = useState([]);
   const [rating, setRating] = useState(4);
   const [price, setPrice] = useState([0, 100]);
+  const [indexProvince, setIndexProvince] = useState(-1);
+  const [listSkill, setListSkill] = useState({ name: null });
   const fetchTutorListing = async () => {
     try {
       const res = await axios.get(api);
@@ -94,17 +96,7 @@ const TutorListing = (props) => {
     setDisplayListing(display);
   };
 
-  const handleSeeAllClick = async () => {
-    const temp = tutorListing.length;
-    setOffset(0);
-    setTotal(temp);
-    const display = _.slice(tutorListing, offset, offset + LIMITPERPAGE);
-    setDisplayListing(display);
-  };
-  const [address, setAddress] = useState({
-    province: null,
-    district: null,
-  });
+  
   const handleFilterClick = () => {
     let filterTutor = [];
     tutorListing.forEach((element) => {
@@ -128,7 +120,7 @@ const TutorListing = (props) => {
             filterTutor = [];
             filterTutor.push(element);
           }
-        } else if (listSkill.name !== null) {
+        } else if (listSkill !== null && listSkill.name !== null) {
           element.skills.forEach((e) => {
             if (e.name === listSkill.name) {
               filterTutor.push(element);
@@ -148,18 +140,27 @@ const TutorListing = (props) => {
     // console.log('filter click', listSkill);
     setDisplayListing(display);
   };
+  const handleSeeAllClick = async () => {
+    const temp = tutorListing.length;
+    setFilterListing(tutorListing);
+    setOffset(0);
+    setTotal(temp);
+    const display = _.slice(tutorListing, 0, LIMITPERPAGE);
+    setDisplayListing(display);
+  };
+  const [address, setAddress] = useState({
+    province: null,
+    district: null,
+  });
 
   useEffect(() => {
     fetchTutorListing();
-    handleSeeAllClick();
     setTotal(tutorListing.lenght);
     setOffset(0);
   }, []);
 
   const classes = useStyles();
 
-  const [indexProvince, setIndexProvince] = useState(-1);
-  const [listSkill, setListSkill] = useState({ name: null });
   const handleProvinceChange = (event, value) => {
     setIndexProvince(listProvince.indexOf(value));
     setAddress({
