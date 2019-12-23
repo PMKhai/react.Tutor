@@ -15,4 +15,6 @@ export const ALLREGISTRATION = 'tutor/registration';
 export const ALLREVENUE = 'tutor/revenue';
 export const ALLMESSAGES = 'user/messages';
 export const SENDMESSAGE = 'user/sendmessage';
+export const CREATEPAYMENT = 'payment/create_payment_url';
+export const RETURNPAYMENT = 'payment/vnpay_return';
 export const LIMITPERPAGE = 2;

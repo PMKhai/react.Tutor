@@ -53,14 +53,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 const schema = {
   email: {
-    // presence: { allowEmpty: false, message: 'is required' },
+    presence: { allowEmpty: false, message: 'is required' },
     email: true,
     length: {
       maximum: 64,
     },
   },
   password: {
-    // presence: { allowEmpty: false, message: 'is required' },
+     presence: { allowEmpty: false, message: 'is required' },
   },
 };
 
