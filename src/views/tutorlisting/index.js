@@ -20,7 +20,7 @@ import {
 } from '@material-ui/core/styles';
 import Pagination from 'material-ui-flat-pagination';
 import _ from 'lodash';
-import InputSkill from '../../components/inputSkill'
+import InputSkill from '../../components/inputSkill';
 import AddressCard from '../../components/addressCard';
 import { API, ALLTUTOR, LIMITPERPAGE } from '../../config';
 import List from './list';
@@ -59,9 +59,10 @@ const TutorListing = (props) => {
   const [offset, setOffset] = useState(0);
   const [total, setTotal] = useState(0);
   const [filterListing, setFilterListing] = useState([]);
-  const [rating, setRating] = useState(1);
+  const [rating, setRating] = useState(4);
   const [price, setPrice] = useState([0, 100]);
-
+  const [indexProvince, setIndexProvince] = useState(-1);
+  const [listSkill, setListSkill] = useState({ name: null });
   const fetchTutorListing = async () => {
     try {
       const res = await axios.get(api);
@@ -95,29 +96,37 @@ const TutorListing = (props) => {
     setDisplayListing(display);
   };
 
-  const handleSeeAllClick = async () => {
-    const temp = tutorListing.length;
-    setOffset(0);
-    setTotal(temp);
-    const display = _.slice(tutorListing, offset, offset + LIMITPERPAGE);
-    setDisplayListing(display);
-  };
-  const [address, setAddress] = useState({
-    province: '',
-    district: '',
-  });
+  
   const handleFilterClick = () => {
-    const filterTutor = [];
+    let filterTutor = [];
     tutorListing.forEach((element) => {
       if (
-        element.rating === rating &&
+        element.rating >= rating &&
         element.price >= price[0] &&
         element.price <= price[1]
       ) {
-        if (
-          element.address.province === address.province &&
-          element.address.district === address.district
-        ) {
+        if (address.province !== null) {
+          if (
+            element.address.province === address.province &&
+            address.district === null
+          ) {
+            filterTutor.push(element);
+          }
+          if (
+            address.district !== null &&
+            element.address.province === address.province &&
+            element.address.district === address.district
+          ) {
+            filterTutor = [];
+            filterTutor.push(element);
+          }
+        } else if (listSkill !== null && listSkill.name !== null) {
+          element.skills.forEach((e) => {
+            if (e.name === listSkill.name) {
+              filterTutor.push(element);
+            }
+          });
+        } else {
           filterTutor.push(element);
         }
       }
@@ -128,26 +137,35 @@ const TutorListing = (props) => {
     setTotal(temp);
 
     const display = _.slice(filterTutor, 0, LIMITPERPAGE);
-    console.log('filter click', listSkill);
+    // console.log('filter click', listSkill);
     setDisplayListing(display);
   };
+  const handleSeeAllClick = async () => {
+    const temp = tutorListing.length;
+    setFilterListing(tutorListing);
+    setOffset(0);
+    setTotal(temp);
+    const display = _.slice(tutorListing, 0, LIMITPERPAGE);
+    setDisplayListing(display);
+  };
+  const [address, setAddress] = useState({
+    province: null,
+    district: null,
+  });
 
   useEffect(() => {
     fetchTutorListing();
-    handleSeeAllClick();
     setTotal(tutorListing.lenght);
     setOffset(0);
   }, []);
 
   const classes = useStyles();
 
-  const [indexProvince, setIndexProvince] = useState(-1);
-  const [listSkill, setListSkill] = useState([]);
   const handleProvinceChange = (event, value) => {
     setIndexProvince(listProvince.indexOf(value));
     setAddress({
       province: value,
-      district: '',
+      district: null,
     });
   };
   const handleDistrictChange = (event, value) => {
@@ -158,6 +176,7 @@ const TutorListing = (props) => {
   };
   const handleListSkillChange = (event, value) => {
     setListSkill(value);
+    console.log('asd', value);
   };
   return (
     <Container maxWidth="lg">
@@ -191,7 +210,9 @@ const TutorListing = (props) => {
                 handleProvinceChange={handleProvinceChange}
                 handleDistrictChange={handleDistrictChange}
               />
+              <Typography>---</Typography>
               <InputSkill
+                multiple={false}
                 handleChange={handleListSkillChange}
                 skills={listSkill}
               />

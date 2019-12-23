@@ -16,7 +16,7 @@ const schema = {
 
 const InputSkill = (props) => {
   const classes = useStyles();
-  const { skills, handleChange, error, helperText } = props;
+  const { skills, handleChange, error, helperText, multiple } = props;
   const [listSkill, setListSkill] = useState([]);
   const fetchListSkill = async () => {
     try {
@@ -49,7 +49,7 @@ const InputSkill = (props) => {
       <Typography> --- </Typography>
       <Autocomplete
         filterSelectedOptions
-        multiple
+        multiple={multiple}
         options={listSkill}
         getOptionLabel={(option) => option.name}
         defaultValue={skills}
