@@ -28,9 +28,9 @@ const ProfileCard = (props) => {
   };
 
   const displaySkills = skills
-    ? skills.map((skill) => (
+    ? skills.map((skill, index) => (
         // eslint-disable-next-line react/jsx-indent
-        <Chip label={skill} key={skill} className={classes.chip} />
+        <Chip label={skill} key={index} className={classes.chip} />
       ))
     : null;
 
