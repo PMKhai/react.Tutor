@@ -73,8 +73,7 @@ const useStyles = makeStyles({
 
 const Message = () => {
   const classes = useStyles();
-  // const initial = Array(list.length).fill(false);
-  // initial[0] = true;
+
   const [isActive, setIsActive] = useState([]);
   const [isMe, setIsMe] = useState('');
   const [contactList, setContactList] = useState([]);
@@ -119,15 +118,13 @@ const Message = () => {
   useEffect(() => {
     fetchMessages();
     socket.on('message', (data) => {
-      // eslint-disable-next-line no-console
-      console.log(data);
-      // const { email, message } = data;
-      // const temp = { ...displayMessage };
-      // console.log(typeof temp);
-      // if (temp !== {}) {
-      //   temp.messages.push({ owner: email, message });
-      //   setDisplayMessage(temp);
-      // }
+      const { email, message } = data;
+      const newMessage = { owner: email, message };
+      setDisplayMessage((displayMessage) => ({
+        ...displayMessage,
+        messages: [...displayMessage.messages, newMessage],
+      }));
+      setMessage('');
     });
   }, []);
 
@@ -147,7 +144,7 @@ const Message = () => {
     try {
       const Authorization = `Bearer ${token}`;
 
-      const res = await axios.put(
+      await axios.put(
         apiSendMessage,
         // eslint-disable-next-line no-underscore-dangle
         { id: displayMessage._id, message },
@@ -155,7 +152,6 @@ const Message = () => {
           headers: { Authorization },
         }
       );
-      console.log(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -193,7 +189,6 @@ const Message = () => {
                     <div className={classes.textLeft}>
                       <div> {item.contact.name}</div>
                       <div className={classes.content}>
-                        {' '}
                         {item.contact.content}
                       </div>
                     </div>
