@@ -10,6 +10,7 @@ import {
   Button,
   Chip,
 } from '@material-ui/core';
+import { Alert } from 'antd';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import { Rating } from '@material-ui/lab';
@@ -38,6 +39,11 @@ const ShowProfile = (props) => {
   const { search } = props.location;
   const [profile, setProfile] = useState({});
   const [open, setOpen] = useState(false);
+  const user = JSON.parse(localStorage.getItem('user'));
+  const [alert, setAlert] = useState({
+    type: 'error',
+    message: null,
+  });
   const fecthTutorInfo = async () => {
     try {
       const res = await axios.get(`${api}${search}`);
@@ -61,7 +67,18 @@ const ShowProfile = (props) => {
     fecthTutorInfo();
   }, []);
   const handleOpen = () => {
-    setOpen(true);
+    if (user) {
+      if (user.isTutor === true) {
+        setAlert({
+          ...alert,
+          message: 'You can not hire a tutor because you are a tutor !!!',
+        });
+      } else {
+        setOpen(true);
+      }
+    } else {
+      props.history.push('/signin');
+    }
   };
   const handleClose = () => {
     setOpen(false);
@@ -100,10 +117,18 @@ const ShowProfile = (props) => {
             </CardActions>
           </Card>
         </Grid>
+        <Grid item xs={4}>
+          {alert.message && (
+            <div className="alert-field">
+              <Alert message={alert.message} type={alert.type} showIcon closable/>
+            </div>
+          )}
+        </Grid>
         <HireFormDialog
           profile={profile}
           open={open}
           handleClose={handleClose}
+          setAlert={setAlert}
         />
       </Grid>
     </Container>

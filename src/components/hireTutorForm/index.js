@@ -30,9 +30,9 @@ import {
 } from '@material-ui/pickers';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
-import { API, CREATEPAYMENT } from '../../config';
+import { API, ADDNEWCONTRACT } from '../../config';
 
-const api = `${API}${CREATEPAYMENT}`;
+const api = `${API}${ADDNEWCONTRACT}`;
 const useStyles = makeStyles((theme) => ({
   root: {
     width: 250,
@@ -51,11 +51,12 @@ const useStyles = makeStyles((theme) => ({
 
 const HireFormDialog = (props) => {
   const classes = useStyles();
-  const { profile, open, handleClose } = props;
+  const { profile, open, handleClose, setAlert } = props;
   const [hourPerWeek, setHourPerWeek] = useState(6);
   const [weekPerMonth, setWeekPerMonth] = useState(1);
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [bonus, setBonus] = useState(0);
+  const user = JSON.parse(localStorage.getItem('user'));
   const handleBonusChange = (event) => {
     setBonus(event.target.value);
   };
@@ -69,19 +70,19 @@ const HireFormDialog = (props) => {
     setWeekPerMonth(event.target.value);
   };
   const handleConfirm = async (e) => {
+    handleClose();
     try {
       e.preventDefault();
       const form = {};
       form.tutor = profile.email;
-      const user = JSON.parse(localStorage.getItem('user'));
       form.hourlyPrice = profile.price;
       form.weeklyLimit = hourPerWeek;
       form.monthlyLimit = weekPerMonth;
-      form.weeklyBonus = bonus;
+      form.weeklyBonus = bonus * 1;
       form.totalHour = hourPerWeek * weekPerMonth;
       form.student = user.email;
       form.dayOfHire = selectedDate;
-      form.amount = hourPerWeek * weekPerMonth * profile.price + bonus;
+      form.amount = hourPerWeek * weekPerMonth * profile.price + bonus * 1;
       form.bankCode = '';
       form.orderDescription = 'thanh toan tien hoc phi uber tutor';
       form.orderType = 'billpayment';
@@ -90,9 +91,15 @@ const HireFormDialog = (props) => {
       const res = await axios.post(api, form);
       const { returncode, result } = res.data;
       if (returncode === 1) {
-        console.log(result);
-        // eslint-disable-next-line no-restricted-globals
-        location.href = result;
+        setAlert({
+          type: 'success',
+          message: res.data.returnmessage,
+        });
+      } else {
+        setAlert({
+          type: 'error',
+          message: res.data.returnmessage,
+        });
       }
     } catch (err) {
       console.log(err);
@@ -235,7 +242,7 @@ const HireFormDialog = (props) => {
             <Grid item xs={7}>
               <Typography variant="button">
                 Total Money: $
-                {hourPerWeek * weekPerMonth * profile.price - bonus}
+                {hourPerWeek * weekPerMonth * profile.price + bonus * 1}
               </Typography>
             </Grid>
           </Grid>

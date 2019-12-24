@@ -95,7 +95,7 @@ const NormalNavbar = () => {
           <Link to="/message">Message</Link>
         </Menu.Item>
         <Menu.Item>
-          <Link to="/registration">Registration required</Link>
+          <Link to="/contract">Contract</Link>
         </Menu.Item>
         <Menu.Item>
           <Link to="/revenue">Revenue</Link>
