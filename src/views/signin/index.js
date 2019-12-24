@@ -226,7 +226,7 @@ export default function SignIn(props) {
       <div className={classes.paper}>
         {alert && (
           <div className="alert-field">
-            <Alert message={alert} type="error" showIcon />
+            <Alert message={alert} type="error" showIcon closable/>
           </div>
         )}
         <Avatar className={classes.avatar}>

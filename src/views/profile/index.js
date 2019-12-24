@@ -251,7 +251,7 @@ const Profile = (props) => {
       <div className={classes.paper}>
         {alert.message && (
           <div className="alert-field">
-            <Alert message={alert.message} type={alert.type} showIcon />
+            <Alert message={alert.message} type={alert.type} showIcon closable/>
           </div>
         )}
         <Avatar className={classes.avatar}>

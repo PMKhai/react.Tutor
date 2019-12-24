@@ -8,7 +8,7 @@ import SignUp from './views/singup';
 import Profile from './views/profile';
 import ShowProfile from './views/showprofile';
 import TutorListing from './views/tutorlisting';
-import RegistrationRequest from './views/registrationrequest';
+import Contract from './views/contract';
 import Revenue from './views/revenue';
 import ChangePassword from './components/changePassword';
 import ResetPassword from './components/sendMailRecover';
@@ -53,10 +53,10 @@ const Routes = () => (
       path="/tutor/all"
     />
     <RouteWithLayout
-      component={RegistrationRequest}
+      component={Contract}
       exact
       layout={NormalLayout}
-      path="/registration"
+      path="/contract"
     />
     <RouteWithLayout
       component={Revenue}
