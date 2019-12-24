@@ -166,7 +166,7 @@ export default function RegistrationRequest() {
               </TableCell>
               <TableCell>{row.name}</TableCell>
               <TableCell align="center">{renderStatus(row.status)}</TableCell>
-              <TableCell align="center">{row.payment || 0} USD</TableCell>
+              <TableCell align="center">{row.totalMoney || 0} USD</TableCell>
               <TableCell align="center">
                 <Button
                   variant="contained"
