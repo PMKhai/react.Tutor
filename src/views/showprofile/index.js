@@ -9,12 +9,16 @@ import {
   CardContent,
   Button,
   Chip,
+  Paper,
+  Tabs,
+  Tab,
 } from '@material-ui/core';
+import { Rating } from '@material-ui/lab';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
-import { Rating } from '@material-ui/lab';
 import HireFormDialog from '../../components/hireTutorForm';
 import { API, VIEWTUTOR } from '../../config';
+import Review from './review';
 
 const api = `${API}${VIEWTUTOR}`;
 
@@ -29,7 +33,27 @@ const useStyles = makeStyles({
     marginRight: '5px',
     marginTop: '2px',
   },
+  rightContent: {
+    height: '100%',
+  },
 });
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <Typography
+      component="div"
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <div> {children}</div>}
+    </Typography>
+  );
+}
 
 const ShowProfile = (props) => {
   const classes = useStyles();
@@ -38,12 +62,17 @@ const ShowProfile = (props) => {
   const { search } = props.location;
   const [profile, setProfile] = useState({});
   const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(0);
+  const [reviews, setReviews] = useState([]);
   const fecthTutorInfo = async () => {
     try {
       const res = await axios.get(`${api}${search}`);
       const { tutorInfo, returncode, returnMessage } = res.data;
-      if (returncode === 1) setProfile(() => tutorInfo);
-      else console.log(returnMessage);
+      console.log(res.data);
+      if (returncode === 1) {
+        setProfile(() => tutorInfo);
+        setReviews(tutorInfo.reviews);
+      } else console.log(returnMessage);
     } catch (err) {
       console.log(err);
     }
@@ -65,6 +94,9 @@ const ShowProfile = (props) => {
   };
   const handleClose = () => {
     setOpen(false);
+  };
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
   };
   return (
     <Container maxWidth="lg">
@@ -105,6 +137,26 @@ const ShowProfile = (props) => {
           open={open}
           handleClose={handleClose}
         />
+        <Grid item xs={8}>
+          <Paper square>
+            <Tabs
+              value={value}
+              indicatorColor="primary"
+              textColor="primary"
+              onChange={handleChange}
+              aria-label="disabled tabs example"
+            >
+              <Tab label="Comment" />
+              <Tab label="Tutor's history" />
+            </Tabs>
+            <TabPanel value={value} index={0}>
+              <Review reviews={reviews} />
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              Item Two
+            </TabPanel>
+          </Paper>
+        </Grid>
       </Grid>
     </Container>
   );
