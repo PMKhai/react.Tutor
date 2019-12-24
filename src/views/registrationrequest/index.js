@@ -14,47 +14,22 @@ import {
 } from '@material-ui/core';
 import _ from 'lodash';
 import axios from 'axios';
-import { API, ALLREGISTRATION } from '../../config';
+import {
+  API,
+  ALLREGISTRATION,
+  ACCEPTCONTRACT,
+  CANCELCONTRACT,
+} from '../../config';
 
 const api = `${API}${ALLREGISTRATION}`;
+const apiAcceptContract = `${API}${ACCEPTCONTRACT}`;
+const apiCancelContract = `${API}${CANCELCONTRACT}`;
 
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
   },
 });
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozenyoghurt@gmail.com', 159, 6.0, 24, 4.0),
-  createData('Icecreamsandwich@gmail.com', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
 
 export default function RegistrationRequest() {
   const classes = useStyles();
@@ -66,7 +41,9 @@ export default function RegistrationRequest() {
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [display, setDisplay] = useState(_.slice(rows, 0, rowsPerPage));
+  const [display, setDisplay] = useState(
+    _.slice(registrationListing, 0, rowsPerPage)
+  );
 
   const fetchRegistrationListing = async () => {
     try {
@@ -145,6 +122,64 @@ export default function RegistrationRequest() {
     }
   };
 
+  const updateAcceptStatus = async (idContract) => {
+    try {
+      const Authorization = `Bearer ${token}`;
+
+      const res = await axios.put(
+        apiAcceptContract,
+        { id: idContract },
+        {
+          headers: { Authorization },
+        }
+      );
+      const { returnCode } = res.data;
+      if (returnCode === 1) {
+        const temp = registrationListing.map((e) => {
+          // eslint-disable-next-line no-underscore-dangle
+          if (e._id === idContract) e.status = 'doing';
+          return e;
+        });
+        setRegistrationListing(temp);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const updateCancelStatus = async (idContract) => {
+    try {
+      const Authorization = `Bearer ${token}`;
+
+      const res = await axios.put(
+        apiCancelContract,
+        { id: idContract },
+        {
+          headers: { Authorization },
+        }
+      );
+      const { returnCode } = res.data;
+      if (returnCode === 1) {
+        const temp = registrationListing.map((e) => {
+          // eslint-disable-next-line no-underscore-dangle
+          if (e._id === idContract) e.status = 'doing';
+          return e;
+        });
+        setRegistrationListing(temp);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleClickAcceptButton = (idContract) => {
+    updateAcceptStatus(idContract);
+  };
+
+  const handelClickCancelButton = (idContract) => {
+    updateCancelStatus(idContract);
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} size="small" aria-label="simple table">
@@ -172,10 +207,17 @@ export default function RegistrationRequest() {
                   variant="contained"
                   color="primary"
                   style={{ marginRight: 2 }}
+                  onClick={() => handleClickAcceptButton(row._id)}
+                  disabled={row.status !== 'waiting'}
                 >
                   Accept
                 </Button>
-                <Button variant="contained" color="secondary">
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => handelClickCancelButton(row._id)}
+                  disabled={row.status !== 'waiting'}
+                >
                   Cancel
                 </Button>
               </TableCell>
