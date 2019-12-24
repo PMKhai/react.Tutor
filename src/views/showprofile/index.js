@@ -17,6 +17,7 @@ import { Rating } from '@material-ui/lab';
 import { Alert } from 'antd';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
+import _ from 'lodash';
 import HireFormDialog from '../../components/hireTutorForm';
 import { API, VIEWTUTOR } from '../../config';
 import Review from './review';
@@ -65,6 +66,8 @@ const ShowProfile = (props) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(0);
   const [reviews, setReviews] = useState([]);
+  const [defaultReview, setDefaultReview] = useState([]);
+  const [totalReviewsList, setTotalReviewsList] = useState(0);
   // eslint-disable-next-line no-undef
   const user = JSON.parse(localStorage.getItem('user'));
   const [alert, setAlert] = useState({
@@ -75,10 +78,12 @@ const ShowProfile = (props) => {
     try {
       const res = await axios.get(`${api}${search}`);
       const { tutorInfo, returncode, returnMessage } = res.data;
-      console.log(res.data);
       if (returncode === 1) {
         setProfile(() => tutorInfo);
         setReviews(tutorInfo.reviews);
+        const temp = _.slice(tutorInfo.reviews, 0, 5);
+        setDefaultReview(temp);
+        setTotalReviewsList(tutorInfo.reviews.length);
       } else console.log(returnMessage);
     } catch (err) {
       console.log(err);
@@ -150,7 +155,7 @@ const ShowProfile = (props) => {
             </CardActions>
           </Card>
         </Grid>
-        <Grid item xs={4}>
+        {/* <Grid item xs={4}>
           {alert.message && (
             <div className="alert-field">
               <Alert
@@ -161,7 +166,7 @@ const ShowProfile = (props) => {
               />
             </div>
           )}
-        </Grid>
+        </Grid> */}
         <HireFormDialog
           profile={profile}
           open={open}
@@ -181,10 +186,14 @@ const ShowProfile = (props) => {
               <Tab label="Tutor's history" />
             </Tabs>
             <TabPanel value={value} index={0}>
-              <Review reviews={reviews} />
+              <Review
+                reviews={reviews}
+                defaultReview={defaultReview}
+                total={totalReviewsList}
+              />
             </TabPanel>
             <TabPanel value={value} index={1}>
-              Item Two
+              Coming soon...
             </TabPanel>
           </Paper>
         </Grid>
