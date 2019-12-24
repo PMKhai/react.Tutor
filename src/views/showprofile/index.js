@@ -126,6 +126,19 @@ const ShowProfile = (props) => {
       <Grid container>
         <Grid item xs={4}>
           <Card className={classes.card}>
+            {alert.message && (
+              <div
+                className="alert-field"
+                style={{ position: 'absolute', width: 345 }}
+              >
+                <Alert
+                  message={alert.message}
+                  type={alert.type}
+                  showIcon
+                  closable
+                />
+              </div>
+            )}
             <CardMedia
               className={classes.media}
               image={profile.urlAvatar}
@@ -155,18 +168,6 @@ const ShowProfile = (props) => {
             </CardActions>
           </Card>
         </Grid>
-        {/* <Grid item xs={4}>
-          {alert.message && (
-            <div className="alert-field">
-              <Alert
-                message={alert.message}
-                type={alert.type}
-                showIcon
-                closable
-              />
-            </div>
-          )}
-        </Grid> */}
         <HireFormDialog
           profile={profile}
           open={open}
