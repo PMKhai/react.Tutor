@@ -27,6 +27,7 @@ const TopTutor = (props) => {
               skills={Object.values(tutor.skills).map((value) => {
                 return value.name;
               })}
+              address={tutor.address}
               {...rest}
             />
           </Grid>

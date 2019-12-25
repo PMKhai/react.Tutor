@@ -89,7 +89,7 @@ const schema = {
   overview: {
     presence: { allowEmpty: false, message: 'is required' },
     length: {
-      minimum: 30,
+      minimum: 10,
       maximum: 300,
     },
   },
@@ -125,7 +125,7 @@ const Profile = (props) => {
   const [address, setAddress] = useState(formState.values.address);
   const [indexProvince, setIndexProvince] = useState(-1);
   const handleProvinceChange = (event, value) => {
-    console.log("event",event)
+    console.log('event', event);
     setIndexProvince(listProvince.indexOf(value));
     setAddress({
       province: value,
@@ -244,14 +244,18 @@ const Profile = (props) => {
     }));
   }, [formState.values]);
 
-  const hasError = (field) =>
-    !!(formState.errors[field]);
+  const hasError = (field) => !!formState.errors[field];
   return (
     <Container maxWidth="sm" className={classes.widthForm}>
       <div className={classes.paper}>
         {alert.message && (
           <div className="alert-field">
-            <Alert message={alert.message} type={alert.type} showIcon closable/>
+            <Alert
+              message={alert.message}
+              type={alert.type}
+              showIcon
+              closable
+            />
           </div>
         )}
         <Avatar className={classes.avatar}>
@@ -369,63 +373,67 @@ const Profile = (props) => {
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid item xs={12}>
-                <Card className={classes.card}>
-                  <CardContent>
-                    <InputSkill
-                      handleChange={handleChange}
-                      skills={formState.values.skills}
-                      error={hasError('skills')}
-                      helperText={
-                        hasError('skills') ? formState.errors.skills : null
-                      }
-                      multiple
-                    />
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12}>
-                <Card className={classes.card}>
-                  <CardContent>
-                    <Typography>Hourly Price: {price}$</Typography>
-                    <Slider
-                      name="price"
-                      value={price || 0}
-                      onChange={(event, value) => setPrice(value)}
-                      valueLabelDisplay="auto"
-                      getAriaValueText={priceText}
-                    />
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12}>
-                <Card className={classes.card}>
-                  <CardContent>
-                    <Typography>Overview</Typography>
-                    <Typography>---</Typography>
-                    <TextField
-                      variant="outlined"
-                      required
-                      fullWidth
-                      name="overview"
-                      // label="Overview"
-                      placeholder="Tell something about you !!!"
-                      id="overview"
-                      autoComplete="overview"
-                      error={hasError('overview')}
-                      helperText={
-                        hasError('overview')
-                          ? formState.errors.overview[0]
-                          : null
-                      }
-                      onChange={handleChange}
-                      value={formState.values.overview || ''}
-                      multiline
-                      rows="10"
-                    />
-                  </CardContent>
-                </Card>
-              </Grid>
+              {user.isTutor && (
+                  <Grid item xs={12}>
+                    <Card className={classes.card}>
+                      <CardContent>
+                        <InputSkill
+                          handleChange={handleChange}
+                          skills={formState.values.skills}
+                          error={hasError('skills')}
+                          helperText={
+                            hasError('skills') ? formState.errors.skills : null
+                          }
+                          multiple
+                        />
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ) && (
+                  <Grid item xs={12}>
+                    <Card className={classes.card}>
+                      <CardContent>
+                        <Typography>Hourly Price: {price}$</Typography>
+                        <Slider
+                          name="price"
+                          value={price || 0}
+                          onChange={(event, value) => setPrice(value)}
+                          valueLabelDisplay="auto"
+                          getAriaValueText={priceText}
+                        />
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ) && (
+                  <Grid item xs={12}>
+                    <Card className={classes.card}>
+                      <CardContent>
+                        <Typography>Overview</Typography>
+                        <Typography>---</Typography>
+                        <TextField
+                          variant="outlined"
+                          required
+                          fullWidth
+                          name="overview"
+                          // label="Overview"
+                          placeholder="Tell something about you !!!"
+                          id="overview"
+                          autoComplete="overview"
+                          error={hasError('overview')}
+                          helperText={
+                            hasError('overview')
+                              ? formState.errors.overview[0]
+                              : null
+                          }
+                          onChange={handleChange}
+                          value={formState.values.overview || ''}
+                          multiline
+                          rows="10"
+                        />
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                )}
             </Grid>
             <Button
               type="submit"

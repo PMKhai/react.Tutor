@@ -24,6 +24,7 @@ import _ from 'lodash';
 import axios from 'axios';
 import { Alert } from 'antd';
 import dateformat from 'dateformat';
+import ContractFormDialog from '../../components/contractForm';
 import {
   API,
   ALLCONTRACT,
@@ -67,7 +68,8 @@ export default function RegistrationRequest() {
   const [display, setDisplay] = useState(
     _.slice(registrationListing, 0, rowsPerPage)
   );
-  const [open, setOpen] = React.useState(false);
+  const [reportOpen, setReportOpen] = React.useState(false);
+  const [contractOpen, setContractOpen] = React.useState(false);
   const [contract, setContract] = useState({
     idContract: '',
     tutor: '',
@@ -78,7 +80,8 @@ export default function RegistrationRequest() {
     message: null,
   });
   const handleClose = () => {
-    setOpen(false);
+    setReportOpen(false);
+    setContractOpen(false);
   };
   const fetchRegistrationListing = async () => {
     try {
@@ -250,7 +253,7 @@ export default function RegistrationRequest() {
     }
   };
   const handleConfirmButton = async () => {
-    setOpen(false);
+    setReportOpen(false);
     try {
       contract.reason = reason;
       contract.status = 'reported';
@@ -315,7 +318,11 @@ export default function RegistrationRequest() {
     updateDoneStatus(idContract);
   };
   const handleClickReportButton = (contract) => {
-    setOpen(true);
+    setReportOpen(true);
+    setContract(contract);
+  };
+  const handleClickShowButton = (contract) => {
+    setContractOpen(true);
     setContract(contract);
   };
   const handleReasonChange = (event) => {
@@ -342,12 +349,12 @@ export default function RegistrationRequest() {
               <TableCell>
                 {user.isTutor ? 'Emai-Student' : 'Email-Tutor'}
               </TableCell>
-              <TableCell align="center">Hire Date</TableCell>
               <TableCell align="center">Start Date</TableCell>
               <TableCell align="center">End Date</TableCell>
               <TableCell align="center">Total Hour</TableCell>
               <TableCell align="center">Total Money</TableCell>
               <TableCell align="center">Status</TableCell>
+              <TableCell align="center">Detail</TableCell>
               <TableCell align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -358,12 +365,21 @@ export default function RegistrationRequest() {
                 <TableCell component="th" scope="row">
                   {user.isTutor ? row.student : row.tutor}
                 </TableCell>
-                <TableCell align="center">{row.dayOfHire}</TableCell>
                 <TableCell align="center">{row.startDate}</TableCell>
                 <TableCell align="center">{row.endDate}</TableCell>
                 <TableCell align="center">{row.totalHour || 0} Hours</TableCell>
                 <TableCell align="center">{row.totalMoney || 0} USD</TableCell>
                 <TableCell align="center">{renderStatus(row.status)}</TableCell>
+                <TableCell align="center">
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    style={{ marginRight: 2 }}
+                    onClick={() => handleClickShowButton(row)}
+                  >
+                    Show
+                  </Button>
+                </TableCell>
                 {user.isTutor ? (
                   <TableCell align="center">
                     <Button
@@ -413,9 +429,9 @@ export default function RegistrationRequest() {
                       color="inherit"
                       onClick={() => handelClickCancelButton(row._id)}
                       hidden={
-                        row.status !== 'reported' &&
-                        row.status !== 'pending' &&
-                        row.status !== 'paying'
+                        row.status !== 'reported'
+                        && row.status !== 'pending'
+                        && row.status !== 'paying'
                       }
                     >
                       Cancel
@@ -445,11 +461,16 @@ export default function RegistrationRequest() {
         />
       </TableContainer>
       <div>
+        <ContractFormDialog
+          contract={contract}
+          open={contractOpen}
+          handleClose={handleClose}
+        />
         <Dialog
           fullWidth
           maxWidth="xs"
           scroll="paper"
-          open={open}
+          open={reportOpen}
           onClose={handleClose}
           aria-labelledby="form-dialog-title"
         >

@@ -47,6 +47,7 @@ const useStyles = makeStyles({
   },
   chip: {
     marginRight: '5px',
+    marginLeft: '5px',
     marginTop: '2px',
   },
   rightContent: {
@@ -253,7 +254,14 @@ const ShowProfile = (props) => {
             />
             <CardContent>
               <Typography gutterBottom variant="h5" component="h2">
-                {profile.name}
+                {profile.name} 
+                {profile.address ? (
+                  <Chip
+                    label={profile.address.province}
+                    key={value.name}
+                    className={classes.chip}
+                  />
+                ) : null}
                 <Typography>{profile.price || 0} USD/h</Typography>
               </Typography>
               <Rating name="read-only" value={profile.rating} readOnly />
