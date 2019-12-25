@@ -23,6 +23,7 @@ import {
 import _ from 'lodash';
 import axios from 'axios';
 import { Alert } from 'antd';
+import dateformat from 'dateformat';
 import {
   API,
   ALLCONTRACT,
@@ -30,6 +31,8 @@ import {
   CANCELCONTRACT,
   DONECONTRACT,
   REPORTCONTRACT,
+  CREATEPAYMENT,
+  RETURNPAYMENT,
 } from '../../config';
 import 'antd/dist/antd.css';
 
@@ -38,6 +41,8 @@ const apiAcceptContract = `${API}${ACCEPTCONTRACT}`;
 const apiCancelContract = `${API}${CANCELCONTRACT}`;
 const apiDoneContract = `${API}${DONECONTRACT}`;
 const apiReportContract = `${API}${REPORTCONTRACT}`;
+const apiCreatPayment = `${API}${CREATEPAYMENT}`;
+const apiReturnPayment = `${API}${RETURNPAYMENT}`;
 
 const useStyles = makeStyles({
   table: {
@@ -230,7 +235,12 @@ export default function RegistrationRequest() {
       if (returnCode === 1) {
         const temp = registrationListing.map((e) => {
           // eslint-disable-next-line no-underscore-dangle
-          if (e._id === idContract) e.status = 'done';
+          if (e._id === idContract) {
+            e.status = 'done';
+            const date = new Date();
+            e.endDate = dateformat(date, 'dd/mm/yyyy');
+          }
+
           return e;
         });
         setRegistrationListing(temp);
@@ -261,6 +271,31 @@ export default function RegistrationRequest() {
           type: 'success',
           message: returnMessage,
         });
+      } else {
+        setAlert({ ...alert, message: returnMessage });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handelClickPayButton = async (row) => {
+    try {
+      const form = {};
+      form._id = row._id;
+      form.idContract = row.idContract;
+      form.amount = row.totalMoney * 1;
+      form.bankCode = '';
+      form.orderDescription = 'thanh toan tien hoc phi uber tutor';
+      form.orderType = 'billpayment';
+      form.language = 'vn';
+      console.log(form);
+      const res = await axios.post(apiCreatPayment, form);
+      const { returnCode, result, returnMessage } = res.data;
+      if (returnCode === 1) {
+        console.log(result);
+        // eslint-disable-next-line no-restricted-globals
+        location.href = result;
       } else {
         setAlert({ ...alert, message: returnMessage });
       }
@@ -304,11 +339,12 @@ export default function RegistrationRequest() {
         <Table className={classes.table} size="small" aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
               <TableCell>
                 {user.isTutor ? 'Emai-Student' : 'Email-Tutor'}
               </TableCell>
+              <TableCell align="center">Hire Date</TableCell>
               <TableCell align="center">Start Date</TableCell>
+              <TableCell align="center">End Date</TableCell>
               <TableCell align="center">Total Hour</TableCell>
               <TableCell align="center">Total Money</TableCell>
               <TableCell align="center">Status</TableCell>
@@ -319,11 +355,12 @@ export default function RegistrationRequest() {
             {display.map((row, key) => (
               // eslint-disable-next-line react/no-array-index-key
               <TableRow key={key}>
-                <TableCell>{row.idContract}</TableCell>
                 <TableCell component="th" scope="row">
                   {user.isTutor ? row.student : row.tutor}
                 </TableCell>
                 <TableCell align="center">{row.dayOfHire}</TableCell>
+                <TableCell align="center">{row.startDate}</TableCell>
+                <TableCell align="center">{row.endDate}</TableCell>
                 <TableCell align="center">{row.totalHour || 0} Hours</TableCell>
                 <TableCell align="center">{row.totalMoney || 0} USD</TableCell>
                 <TableCell align="center">{renderStatus(row.status)}</TableCell>
@@ -366,7 +403,7 @@ export default function RegistrationRequest() {
                       variant="contained"
                       color="primary"
                       style={{ marginRight: 2 }}
-                      onClick={() => handelClickCancelButton(row._id)}
+                      onClick={() => handelClickPayButton(row)}
                       hidden={row.status !== 'paying'}
                     >
                       Pay
@@ -421,9 +458,9 @@ export default function RegistrationRequest() {
           <DialogContent>
             <Typography>
               We are so sorry about this issue. Just to make sure: you are
-              reporting about contract with ID:
+              reporting about contract which was hired on:
             </Typography>
-            <Typography variant="subtitle2">{contract.idContract}</Typography>
+            <Typography variant="subtitle2">{contract.dayOfHire}</Typography>
 
             <Typography> doing with tutor (email):</Typography>
             <Typography variant="subtitle2">{contract.tutor}</Typography>

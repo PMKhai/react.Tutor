@@ -75,21 +75,16 @@ const HireFormDialog = (props) => {
       e.preventDefault();
       const form = {};
       form.tutor = profile.email;
+      form.student = user.email;
       form.hourlyPrice = profile.price;
       form.weeklyLimit = hourPerWeek;
       form.monthlyLimit = weekPerMonth;
       form.weeklyBonus = bonus * 1;
       form.totalHour = hourPerWeek * weekPerMonth;
-      form.student = user.email;
-      form.dayOfHire = selectedDate;
-      form.amount = hourPerWeek * weekPerMonth * profile.price + bonus * 1;
-      form.bankCode = '';
-      form.orderDescription = 'thanh toan tien hoc phi uber tutor';
-      form.orderType = 'billpayment';
-      form.language = 'vn';
-
+      form.totalMoney = hourPerWeek * weekPerMonth * profile.price + bonus * 1;
+      form.startDate = selectedDate;
       const res = await axios.post(api, form);
-      const { returncode, result } = res.data;
+      const { returncode, returnmessage } = res.data;
       if (returncode === 1) {
         setAlert({
           type: 'success',
@@ -224,7 +219,7 @@ const HireFormDialog = (props) => {
               <KeyboardDatePicker
                 margin="normal"
                 id="date-picker-dialog"
-                format="MM/dd/yyyy"
+                format="dd/MM/yyyy"
                 value={selectedDate}
                 onChange={handleDateChange}
                 KeyboardButtonProps={{
