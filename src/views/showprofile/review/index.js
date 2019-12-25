@@ -22,7 +22,7 @@ const Review = (props) => {
 
   const handleClick = (offset) => {
     setOffset(offset);
-    const display = _.slice(reviews, offset, offset + 5);
+    const display = _.slice(reviews, offset, offset + 4);
     setDisplayListing(display);
   };
 
@@ -92,7 +92,7 @@ const Review = (props) => {
       >
         <MuiThemeProvider theme={theme}>
           <Pagination
-            limit={5}
+            limit={4}
             offset={offset}
             total={total}
             onClick={(e, offset) => handleClick(offset)}

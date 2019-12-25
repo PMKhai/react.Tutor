@@ -26,11 +26,18 @@ import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import _ from 'lodash';
 import HireFormDialog from '../../components/hireTutorForm';
-import { API, VIEWTUTOR, SENDMESSAGEFROMPROFILE } from '../../config';
+import {
+  API,
+  VIEWTUTOR,
+  SENDMESSAGEFROMPROFILE,
+  SENDREVIEW,
+} from '../../config';
 import Review from './review';
 
 const api = `${API}${VIEWTUTOR}`;
 const apiSendMessage = `${API}${SENDMESSAGEFROMPROFILE}`;
+const apiSendReview = `${API}${SENDREVIEW}`;
+
 const useStyles = makeStyles({
   card: {
     maxWidth: 345,
@@ -72,11 +79,14 @@ const ShowProfile = (props) => {
   const [profile, setProfile] = useState({});
   const [open, setOpen] = useState(false);
   const [openMessageForm, setOpenMessageForm] = useState(false);
+  const [openReviewForm, setOpenReviewForm] = useState(false);
   const [value, setValue] = useState(0);
   const [reviews, setReviews] = useState([]);
   const [defaultReview, setDefaultReview] = useState([]);
   const [totalReviewsList, setTotalReviewsList] = useState(0);
   const [message, setMessage] = useState('');
+  const [rating, setRating] = useState(1);
+  const [review, setReview] = useState('');
   // eslint-disable-next-line no-undef
   const user = JSON.parse(localStorage.getItem('user'));
   const [alert, setAlert] = useState({
@@ -92,7 +102,7 @@ const ShowProfile = (props) => {
       if (returncode === 1) {
         setProfile(() => tutorInfo);
         setReviews(tutorInfo.reviews);
-        const temp = _.slice(tutorInfo.reviews, 0, 5);
+        const temp = _.slice(tutorInfo.reviews, 0, 4);
         setDefaultReview(temp);
         setTotalReviewsList(tutorInfo.reviews.length);
       } else console.log(returnMessage);
@@ -150,7 +160,7 @@ const ShowProfile = (props) => {
     try {
       if (message !== '') {
         const Authorization = `Bearer ${token}`;
-        const res = axios.put(
+        const res = await axios.put(
           `${apiSendMessage}${search}`,
           { message },
           {
@@ -173,6 +183,48 @@ const ShowProfile = (props) => {
     if (a) {
       setOpenMessageForm(false);
       setMessage('');
+    }
+  };
+
+  const onChangeReview = (e) => {
+    setReview(e.target.value);
+  };
+
+  const handleCloseReviewForm = () => {
+    setOpenReviewForm(false);
+  };
+
+  const handleOpenReviewForm = () => {
+    setOpenReviewForm(true);
+  };
+
+  const sendReview = async () => {
+    try {
+      if (review !== '') {
+        const Authorization = `Bearer ${token}`;
+        const res = await axios.put(
+          `${apiSendReview}${search}`,
+          { review, rating },
+          {
+            headers: { Authorization },
+          }
+        );
+
+        const { returnCode, newReview } = res.data;
+        if (returnCode === 1) setReviews([...reviews, newReview]);
+        return returnCode === 1;
+      }
+      return false;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  const handleSendReview = () => {
+    const newReview = sendReview();
+    if (newReview) {
+      setReview('');
+      setOpenReviewForm(false);
     }
   };
 
@@ -248,7 +300,7 @@ const ShowProfile = (props) => {
 
         <Dialog
           open={openMessageForm}
-          onClose={handleClose}
+          onClose={handleCloseMessageForm}
           aria-labelledby="form-dialog-title"
         >
           <DialogTitle id="form-dialog-title">Send message</DialogTitle>
@@ -276,18 +328,66 @@ const ShowProfile = (props) => {
             </Button>
           </DialogActions>
         </Dialog>
+
+        <Dialog
+          open={openReviewForm}
+          onClose={handleCloseReviewForm}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">Your review</DialogTitle>
+          <DialogContent>
+            <DialogContentText style={{ width: 500 }}>
+              Give your reviews about this tutor
+            </DialogContentText>
+            <Rating
+              name="simple-controlled"
+              value={rating}
+              onChange={(event, newRating) => {
+                setRating(newRating);
+              }}
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Content..."
+              type="text"
+              value={review}
+              onChange={onChangeReview}
+              fullWidth
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseReviewForm} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={handleSendReview} color="primary">
+              Send
+            </Button>
+          </DialogActions>
+        </Dialog>
+
         <Grid item xs={8}>
           <Paper square>
-            <Tabs
-              value={value}
-              indicatorColor="primary"
-              textColor="primary"
-              onChange={handleChange}
-              aria-label="disabled tabs example"
-            >
-              <Tab label="Comment" />
-              <Tab label="Tutor's history" />
-            </Tabs>
+            <div>
+              <Tabs
+                value={value}
+                indicatorColor="primary"
+                textColor="primary"
+                onChange={handleChange}
+                aria-label="disabled tabs example"
+              >
+                <Tab label="Reviews" />
+                <Tab label="Tutor's history" />
+                <Button
+                  style={{ marginLeft: '43%', marginTop: 5 }}
+                  color="primary"
+                  onClick={handleOpenReviewForm}
+                >
+                  Your review
+                </Button>
+              </Tabs>
+            </div>
             <TabPanel value={value} index={0}>
               <Review
                 reviews={reviews}

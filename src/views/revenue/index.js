@@ -23,17 +23,18 @@ const api = `${API}${ALLREVENUE}`;
 const calculate = (revenue, year) => {
   const result = Array(12).fill(0);
   const reveneuByYear = _.filter(revenue, (o) => {
-    return moment(o.dayOfPayment).year() === year;
+    console.log(moment(o.endDate, 'DD-MM-YYYY').year());
+    return moment(o.endDate, 'DD-MM-YYYY').year() === year;
   });
 
   for (let i = 0; i < 12; i += 1) {
     let temp = 0;
     reveneuByYear.forEach((element) => {
-      if (moment(element.dayOfPayment).month() === i) {
+      if (moment(element.endDate, 'DD-MM-YYYY').month() === i) {
         temp += element.totalMoney * 0.7;
       }
     });
-    result[i] = temp;
+    result[i] = _.floor(temp, 2);
   }
   return result;
 };
@@ -43,6 +44,7 @@ const Revenue = () => {
   const token = JSON.parse(localStorage.getItem('token'));
 
   const [revenueListing, setRevenueListing] = useState([]);
+  const [total, setTotal] = useState(0);
   const [data, setData] = useState({
     labels,
     datasets: [
@@ -66,6 +68,7 @@ const Revenue = () => {
       if (returnCode === 1) {
         setRevenueListing(revenue);
         const display = calculate(revenue, 2019);
+        setTotal(_.floor(_.sum(display), 2));
         setData({
           labels,
           datasets: [
@@ -85,6 +88,7 @@ const Revenue = () => {
   const handleClick = (e) => {
     const year = parseInt(e.target.value, 10);
     const display = calculate(revenueListing, year);
+    setTotal(_.floor(_.sum(display), 2));
     setData({
       labels,
       datasets: [
@@ -104,7 +108,7 @@ const Revenue = () => {
   return (
     <Card>
       <CardHeader
-        title="Revenue (total: $12)"
+        title={`Revenue (total: ${total} USD)`}
         action={
           <FormControl>
             <InputLabel htmlFor="grouped-native-select">Years</InputLabel>
