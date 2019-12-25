@@ -22,4 +22,5 @@ export const ACCEPTCONTRACT = 'tutor/acceptcontract';
 export const CANCELCONTRACT = 'tutor/cancelcontract';
 export const DONECONTRACT = 'tutor/donecontract';
 export const REPORTCONTRACT = 'tutor/reportcontract';
-export const LIMITPERPAGE = 2;
+export const SENDMESSAGEFROMPROFILE = 'user/messagefromprofile';
+export const LIMITPERPAGE = 6;
