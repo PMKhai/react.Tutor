@@ -148,18 +148,21 @@ const ShowProfile = (props) => {
 
   const sendMessage = async () => {
     try {
-      const Authorization = `Bearer ${token}`;
-      const res = axios.put(
-        `${apiSendMessage}${search}`,
-        { message },
-        {
-          headers: { Authorization },
-        }
-      );
+      if (message !== '') {
+        const Authorization = `Bearer ${token}`;
+        const res = axios.put(
+          `${apiSendMessage}${search}`,
+          { message },
+          {
+            headers: { Authorization },
+          }
+        );
 
-      const { returnCode } = res.data;
+        const { returnCode } = res.data;
 
-      return returnCode === 1;
+        return returnCode === 1;
+      }
+      return false;
     } catch (error) {
       return false;
     }
@@ -167,7 +170,10 @@ const ShowProfile = (props) => {
 
   const handleSendMessage = () => {
     const a = sendMessage();
-    if (a) setOpenMessageForm(false);
+    if (a) {
+      setOpenMessageForm(false);
+      setMessage('');
+    }
   };
 
   return (
