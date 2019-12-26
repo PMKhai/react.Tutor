@@ -21,7 +21,7 @@ const useStyles = makeStyles({
 });
 const ProfileCard = (props) => {
   const classes = useStyles();
-  const { path, rating, name, price, urlAvatar, skills } = props;
+  const { path, rating, name, price, urlAvatar, skills, address } = props;
 
   const handleClick = () => {
     props.history.push(path);
@@ -47,6 +47,12 @@ const ProfileCard = (props) => {
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
             {name}
+            {address && (
+              <Chip
+                label={address.province}
+                className={classes.chip}
+              />
+            )}
             <Typography>{price || 0} USD/h</Typography>
           </Typography>
           <Rating name="read-only" value={rating || 0} readOnly />

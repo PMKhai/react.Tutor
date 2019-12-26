@@ -35,7 +35,7 @@ import { API, ADDNEWCONTRACT } from '../../config';
 const api = `${API}${ADDNEWCONTRACT}`;
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: 250,
+    maxWidth: 150,
   },
   margin: {
     height: theme.spacing(3),
@@ -47,6 +47,10 @@ const useStyles = makeStyles((theme) => ({
   dropdown: {
     Width: 400,
   },
+  chip: {
+    marginRight: '2px',
+    marginTop: '2px',
+  },
 }));
 
 const HireFormDialog = (props) => {
@@ -57,6 +61,12 @@ const HireFormDialog = (props) => {
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [bonus, setBonus] = useState(0);
   const user = JSON.parse(localStorage.getItem('user'));
+  const displaySkills = profile.skills
+    ? Object.values(profile.skills).map((value) => (
+        // eslint-disable-next-line react/jsx-indent
+        <Chip label={value.name} key={value.name} className={classes.chip} />
+      ))
+    : null;
   const handleBonusChange = (event) => {
     setBonus(event.target.value);
   };
@@ -107,24 +117,46 @@ const HireFormDialog = (props) => {
     <div>
       <Dialog
         fullWidth
-        maxWidth="xs"
+        maxWidth="sm"
         scroll="paper"
         open={open}
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Hire Form</DialogTitle>
+        <DialogTitle id="form-dialog-title">Hire Tutor Form</DialogTitle>
         <Divider />
         <DialogContent>
-          <Typography variant="subtitle2">Name</Typography>
-          <div>
-            <Avatar
-              alt="ava"
-              src={profile.urlAvatar}
-              className={classes.avaLarge}
-            />
-            <Typography>{profile.name}</Typography>
-          </div>
+          <Typography variant="subtitle2">Info Tutor</Typography>
+          <Grid container>
+            <Grid item xs={3}>
+              <Avatar
+                alt="ava"
+                src={profile.urlAvatar}
+                className={classes.avaLarge}
+              />
+              <Typography>{profile.name}</Typography>
+            </Grid>
+            <Grid item xs={9}>
+              <Typography>
+                Email:{' '}
+                <Chip label={profile.email} className={classes.chip} />
+              </Typography>
+              <Typography>
+                Phone Number:{' '}
+                <Chip label={profile.p_number} className={classes.chip} />
+              </Typography>
+              <Typography>
+                Address:{' '}
+                <Typography variant="overline">
+                  {profile.address ? <Chip label={profile.address.district} className={classes.chip} /> : null}
+                  {profile.address ? <Chip label={profile.address.province} className={classes.chip} /> : null}
+                </Typography>
+              </Typography>
+              <Typography>
+                Skills: {displaySkills}
+              </Typography>
+            </Grid>
+          </Grid>
           <Typography variant="subtitle2">Hourly Price</Typography>
           <Grid container>
             <Grid item xs={6} className={classes.root}>
