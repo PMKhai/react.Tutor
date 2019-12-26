@@ -12,7 +12,7 @@ const api = `${API}${TOPTUTOR}`;
 const Home = (props) => {
   const { ...rest } = props;
   const [tutorListing, setTutorListing] = useState([]);
-
+  const [profile,setProfile] = useState();
   const fecthTopTutor = async () => {
     try {
       const res = await axios.get(api);
@@ -25,11 +25,21 @@ const Home = (props) => {
       console.log(err);
     }
   };
+  const checkProfile = () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user) {
+      if (user.p_number === null) {
+        // eslint-disable-next-line no-restricted-globals
+        location.href = '/profile';
+      }
+    }
+  };
 
   useEffect(() => {
     fecthTopTutor();
+    checkProfile();
   }, []);
-
+  checkProfile();
   return (
     <div>
       <Container maxWidth="lg" style={{ marginBottom: '5px' }}>

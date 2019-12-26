@@ -94,6 +94,26 @@ const schema = {
     },
   },
 };
+const schemaStu = {
+  name: {
+    presence: { allowEmpty: false, message: 'is required' },
+    length: {
+      maximum: 32,
+    },
+  },
+  p_number: {
+    presence: { allowEmpty: false, message: 'is required' },
+    length: {
+      maximum: 20,
+    },
+  },
+  // province: {
+  //   presence: { allowEmpty: false, message: 'is required' },
+  // },
+  // district: {
+  //   presence: { allowEmpty: false, message: 'is required' },
+  // },
+};
 
 const Profile = (props) => {
   const classes = useStyles();
@@ -236,7 +256,14 @@ const Profile = (props) => {
   };
 
   useEffect(() => {
-    const errors = validate(formState.values, schema);
+    let errors = null;
+    if (user.isTutor) {
+      errors = validate(formState.values, schema);
+    } else {
+      errors = validate(formState.values, schemaStu);
+    }
+
+    console.log(errors);
     setFormState((formState) => ({
       ...formState,
       isValid: !errors,
