@@ -211,8 +211,12 @@ const ShowProfile = (props) => {
         );
 
         const { returnCode, newReview } = res.data;
-        if (returnCode === 1) setReviews([...reviews, newReview]);
-        return returnCode === 1;
+        if (returnCode === 1) {
+          setReviews([...reviews, newReview]);
+          setTotalReviewsList(totalReviewsList + 1);
+          return true;
+        }
+        return false;
       }
       return false;
     } catch (error) {
@@ -221,6 +225,8 @@ const ShowProfile = (props) => {
   };
 
   const handleSendReview = () => {
+    setReviews([...reviews]);
+    setTotalReviewsList(totalReviewsList + 1);
     const newReview = sendReview();
     if (newReview) {
       setReview('');

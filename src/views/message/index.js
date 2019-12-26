@@ -7,6 +7,7 @@ import {
   Button,
   InputBase,
   Chip,
+  Typography,
 } from '@material-ui/core';
 import { Send } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
@@ -77,7 +78,7 @@ const Message = () => {
   const [isActive, setIsActive] = useState([]);
   const [isMe, setIsMe] = useState('');
   const [contactList, setContactList] = useState([]);
-  const [displayMessage, setDisplayMessage] = useState({});
+  const [displayMessage, setDisplayMessage] = useState({ messages: [] });
   const [message, setMessage] = useState('');
 
   // eslint-disable-next-line no-undef
@@ -108,7 +109,7 @@ const Message = () => {
         setIsMe(email);
         setDisplayMessage(contactList[0]);
         // eslint-disable-next-line no-underscore-dangle
-        joinRoom(contactList[0]._id);
+        if (contactList[0] !== undefined) joinRoom(contactList[0]._id);
       }
     } catch (error) {
       console.log(error);
@@ -168,73 +169,88 @@ const Message = () => {
 
   return (
     <Container>
-      <Card>
-        <Grid container className={classes.card}>
-          <Grid item sm={4} className={classes.divider}>
-            <ScrollBar component="div">
-              <div className={classes.card}>
-                {contactList.map((item, index) => (
+      {displayMessage !== undefined ? (
+        <Card>
+          <Grid container className={classes.card}>
+            <Grid item sm={4} className={classes.divider}>
+              <ScrollBar component="div">
+                <div className={classes.card}>
+                  {contactList.map((item, index) => (
+                    <Button
+                      className={
+                        isActive[index] ? classes.active : classes.itemsInList
+                      }
+                      onClick={() => handleClick(index, item.email)}
+                      key={index}
+                    >
+                      <Avatar
+                        src={item.contact.urlAvatar}
+                        alt="avatar"
+                        className={classes.avatar}
+                      />
+                      <div className={classes.textLeft}>
+                        <div> {item.contact.name}</div>
+                        <div className={classes.content}>
+                          {item.contact.content}
+                        </div>
+                      </div>
+                    </Button>
+                  ))}
+                </div>
+              </ScrollBar>
+            </Grid>
+            <Grid item sm={8}>
+              <ScrollBar component="div" className={classes.displayMessage}>
+                <div className={classes.displayMessage}>
+                  {displayMessage !== undefined &&
+                    displayMessage.messages.map((item, index) => {
+                      return item.owner === isMe ? (
+                        <div className={classes.rightChip} key={index}>
+                          <Chip label={item.message} color="primary" />
+                        </div>
+                      ) : (
+                        <div className={classes.leftChip} key={index}>
+                          <Chip label={item.message} />
+                        </div>
+                      );
+                    })}
+                </div>
+              </ScrollBar>
+              <div>
+                <form>
+                  <InputBase
+                    inputProps={{ 'aria-label': 'naked' }}
+                    placeholder="Type a message..."
+                    className={classes.inputForm}
+                    value={message}
+                    onChange={handleOnChangeInput}
+                  />
                   <Button
-                    className={
-                      isActive[index] ? classes.active : classes.itemsInList
-                    }
-                    onClick={() => handleClick(index, item.email)}
-                    key={index}
+                    type="submit"
+                    className={classes.buttonForm}
+                    onClick={handleSendMessage}
                   >
-                    <Avatar
-                      src={item.contact.avatar}
-                      alt="avatar"
-                      className={classes.avatar}
-                    />
-                    <div className={classes.textLeft}>
-                      <div> {item.contact.name}</div>
-                      <div className={classes.content}>
-                        {item.contact.content}
-                      </div>
-                    </div>
+                    <Send color="primary" />
                   </Button>
-                ))}
+                </form>
               </div>
-            </ScrollBar>
+            </Grid>
           </Grid>
-          <Grid item sm={8}>
-            <ScrollBar component="div" className={classes.displayMessage}>
-              <div className={classes.displayMessage}>
-                {!!displayMessage.messages &&
-                  displayMessage.messages.map((item, index) => {
-                    return item.owner === isMe ? (
-                      <div className={classes.rightChip} key={index}>
-                        <Chip label={item.message} color="primary" />
-                      </div>
-                    ) : (
-                      <div className={classes.leftChip} key={index}>
-                        <Chip label={item.message} />
-                      </div>
-                    );
-                  })}
-              </div>
-            </ScrollBar>
-            <div>
-              <form>
-                <InputBase
-                  inputProps={{ 'aria-label': 'naked' }}
-                  placeholder="Type a message..."
-                  className={classes.inputForm}
-                  value={message}
-                  onChange={handleOnChangeInput}
-                />
-                <Button
-                  type="submit"
-                  className={classes.buttonForm}
-                  onClick={handleSendMessage}
-                >
-                  <Send color="primary" />
-                </Button>
-              </form>
-            </div>
-          </Grid>
-        </Grid>
-      </Card>
+        </Card>
+      ) : (
+        <Card
+          className={classes.card}
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Typography style={{ fontSize: 30 }}>
+            You have not chatted to any tutor!{' '}
+          </Typography>
+        </Card>
+      )}
     </Container>
   );
 };
